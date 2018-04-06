@@ -1,60 +1,3 @@
-/*Background Image*/
-.fullscreen-bg {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    overflow: hidden;
-    z-index: -100;
-}
-
-.fullscreen-bg__video {
-    position: absolute;
-    object-fit: fill;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/*CssGrid*/
-.wrapper {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    /* grid-template-rows: repeat(4,1fr); */
-    /* grid-auto-columns: 100px; */
-    /* grid-auto-rows: 100px; */
-    grid-template-areas: 
-    "a b c d"
-    "e f f g"
-    "e f f g"
-    "h j j k";
-}
-.mainGrid {
-
-}
-/* items */
-#logoImg {
-    grid-area: a;
-}
-#signupField {
-    grid-area: b;
-}
-#loginField {
-    grid-area: c;
-}
-.mainScreen {
-    grid-area: f;
-    min-width: 500px;
-    min-height: 500px;
-}
-#bottomBanner{
-    grid-area: j;  
-    color: white; 
-}
-
-
 /* Bordered form */
 form {
     border: 3px solid #f1f1f1;
@@ -132,16 +75,19 @@ span.psw {
 
 
 /* The Modal (background) */
-.modalLogIn {
+.modal {
     display: none; /* Hidden by default */
+    position: center; /* Stay in place */
     z-index: 1; /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
+    margin: 0 auto;
+    width: 50%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 0%;
 }
 
 /* Modal Content/Box */
@@ -162,6 +108,12 @@ span.psw {
     font-size: 35px;
     font-weight: bold;
 }
+
+/* body {
+    background-image: url("../Resources/test.mp4");
+    background-color: #06233d;
+    background-size:cover;
+} */
 
 /* Close button on hover */
 .close:hover,
