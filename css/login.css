@@ -22,9 +22,6 @@
 .wrapper {
     display: grid;
     grid-template-columns: repeat(4,1fr);
-    /* grid-template-rows: repeat(4,1fr); */
-    /* grid-auto-columns: 100px; */
-    /* grid-auto-rows: 100px; */
     grid-template-areas: 
     "a b c d"
     "e f f g"
@@ -37,12 +34,27 @@
 /* items */
 #logoImg {
     grid-area: a;
+    min-width: 150px;
+    max-width: 200px;
+    min-height: 150;
+    max-height: 200px;
 }
-#signupField {
+#aboutField {
     grid-area: b;
+    min-width: 250px;
+    max-width: 750px;
+    min-height: 150;
+    max-height: 200px;
 }
 #loginField {
     grid-area: c;
+    min-width: 250px;
+    max-width: 750px;
+    min-height: 150;
+    max-height: 200px;
+}
+#musicPanel {
+    grid-area:d;
 }
 .mainScreen {
     grid-area: f;
@@ -53,6 +65,25 @@
     grid-area: j;  
     color: white; 
 }
+#logoSource {
+    width: 100%;
+    max-width: 150px;
+    height: 100%;
+    max-height: 150px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#mainButtonsField {
+    width: auto;
+    position: relative;
+    margin: 12px auto;
+    display: block;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
 
 
 /* Bordered form */
@@ -72,7 +103,7 @@ input[type=text], input[type=password] {
 
 /* Set a style for all buttons */
 button {
-    background-color: #4CAF50;
+    background-color: rgb(62, 85, 185);
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -86,12 +117,6 @@ button:hover {
     opacity: 0.8;
 }
 
-/* Extra style for the cancel button (red) */
-.cancelbtn {
-    width: auto;
-    padding: 10px 18px;
-    background-color: #f44336;
-}
 
 /* Center the avatar image inside this container */
 .imgcontainer {
@@ -101,7 +126,8 @@ button:hover {
 
 /* Avatar image */
 img.avatar {
-    width: 40%;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
 }
 
@@ -110,10 +136,15 @@ img.avatar {
     padding: 16px;
 }
 
-/* The "Forgot password" text */
-span.psw {
-    float: right;
-    padding-top: 16px;
+.playNow {
+    background-color:#f1f1f1;
+}
+.playNow > button {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+    display: block;
+    margin: auto;
 }
 
 /* Change styles for span and cancel button on extra small screens */
@@ -122,32 +153,53 @@ span.psw {
         display: block;
         float: none;
     }
-    .cancelbtn {
+    .playNow > button {
         width: 100%;
     }
 }
 
+#audioplayer {
+    margin-top:20px;
+}
 
+#description {
+    min-height: 350px;
+    z-index: 1; /* Sit on top */
+    color: rgb(0, 255, 106);
+    font-size: 20px;
+    background-color: rgba(0.5,0.5,0.5,0.5); /* Black w/ opacity */
+}
+#description > dl {
+    padding-top: 45px; 
+    margin-left: 80px;
+    margin-right: 80px;
+}
+#Controls {
+    width: 100%;
+    display:none;
+}
 
-
+#scores {
+    background-color: rgba(0.5,0.5,0.5,0.5); /* Black w/ opacity */
+    margin-bottom: 80px;
+}
 
 /* The Modal (background) */
-.modalLogIn {
+.modal {
     display: none; /* Hidden by default */
     z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    margin: auto;
 }
 
 /* Modal Content/Box */
 .modal-content {
     background-color: #fefefe;
-    margin: 5px auto; /* 15% from the top and centered */
+    margin: 60px auto; /* 15% from the top and centered */
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
 }
@@ -155,12 +207,11 @@ span.psw {
 /* The Close Button */
 .close {
     /* Position it in the top right corner outside of the modal */
-    position: absolute;
-    right: 25px;
-    top: 0; 
     color: #000;
     font-size: 35px;
     font-weight: bold;
+    text-align: right;
+    float: right;
 }
 
 /* Close button on hover */
@@ -172,8 +223,8 @@ span.psw {
 
 /* Add Zoom Animation */
 .animate {
-    -webkit-animation: animatezoom 0.6s;
-    animation: animatezoom 0.6s
+    -webkit-animation: animatezoom 0.8s;
+    animation: animatezoom 0.8s
 }
 
 @-webkit-keyframes animatezoom {

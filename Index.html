@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Taurus Pilot</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+    <script>
+        // Get the modal
+        var modal = document.getElementById('modal');
+        
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        $(document).ready(function(){
+            var video = document.getElementById('videoplayer');
+            var videoList=["Resources/1.mp4","Resources/2.mp4","Resources/3.mp4","Resources/4.mp4","Resources/5.mp4"];
+            if(videoList)
+            videoList.sort(function(a, b) {return 0.5 - Math.random()});
+            var source = document.createElement('source');
+            source.setAttribute('src', videoList[0]);
+            video.appendChild(source);
+            // $("#videoplayer").html("<video id='rawvideo' loop muted autoplay poster='img/test.jpg' class='fullscreen-bg__video'><source src='" +  + "' type='video/mp4'></video>");
+        });
+        function ControlsSH()
+        {
+            if($('#Controls').css('display') === 'block')
+            {
+                document.getElementById("Controls").style.display = "none";
+            }
+            else
+            {
+                document.getElementById("Controls").style.display = "block";
+            }
+        }
+    </script>
+    <!-- <script src="js/libs/vanillaJS/vanilla.js">
+            var modal = document.querySelector(".modal");
+            var trigger = document.querySelector(".playButton");
+            var closeButton = document.querySelector(".close");
+
+            function toggleModal() {
+                modal.classList.toggle("show-modal");
+            }
+
+            function windowOnClick(event) {
+                if (event.target === modal) {
+                    toggleModal();
+                }
+            }
+
+            trigger.addEventListener("click", toggleModal);
+            closeButton.addEventListener("click", toggleModal);
+            window.addEventListener("click", windowOnClick);
+        </script> -->
+    <div class="fullscreen-bg">
+        <video id="videoplayer" loop muted autoplay poster="img/test.jpg" class="fullscreen-bg__video">
+        </video>
+    </div>
+    <div class="wrapper">
+        <div class="mainGrid" id="logoImg">
+            <img id="logoSource" src="Resources/Taurus Pilot.png" alt="Logo">
+        </div>
+        <div class="mainGrid" id="mainButtonsField">
+            <button id="aboutButton" onclick="document.getElementById('SignUp').style.display='block'">Acerca de...</button>
+        </div>
+        <div class="mainGrid" id="mainButtonsField">
+            <button id="playButton" onclick="document.getElementById('Start').style.display='block'">Empezar a jugar</button>
+        </div>
+        <div class="mainGrid" id="musicPanel">
+            <audio id="audioplayer" controls loop autoplay><!-- autoplay-->
+                <source src="Resources/mainmenu2.mp3" type="audio/mpeg"/>
+            </audio>
+        </div>
+        <div class="mainGrid mainScreen">
+            <div id="Start" class="modal mainScreen">
+                <form class="modal-content animate" action="/action_page.php">
+                <div class="imgcontainer">
+                    <span class="close" onclick="document.getElementById('Start').style.display='none'" title="Close Modal">&times;</span>
+                    <img src="Resources/test.jpg" alt="Avatar" class="avatar">
+                </div>
+            
+                <div class="container">
+                    <label for="uname"><b>Nombre o Apodo</b></label>
+                    <input type="text" placeholder="Jose, Roy, Sebas, etc..." name="uname" required>
+        
+                    <!-- <button type="submit">Jugar</button> -->
+                    <label>
+                        <input type="checkbox" checked="checked" name="remember"> Recordar
+                    </label>
+                </div>
+        
+                <div class="container playNow" >
+                    <button type="submit" onclick="window.location.href = 'game.html'">¡Jugar ahora!</button>
+                </div>
+                </form>
+            </div>
+            
+            <div id="description" class="mainScreen">
+                <dl>
+                    <dt>Taurus Pilot</dt>
+                    <dd>Es un juego de naves estilo arcade donde podras dejar tu score acorde a
+                        la cantidad de enemigos y asteroides destruidos.
+                    </dd>
+                    <br>
+                    <dd>Dentro del juego se podran encontrar power ups los cuales podran ayudarte
+                        a combatir a los enemigos.
+                    </dd>
+                    <br>
+                    <dd>Es posible jugar con un compañero usando el teclado dividido.
+                    </dd>             
+                    <!-- other terms and definitions -->
+                </dl>
+                <button type="button" onclick="ControlsSH()">Controles</button>
+                <img id="Controls" src="Resources/Controls.png"/>
+            </div>
+        </div>
+        <div class="mainGrid" id="bottomBanner">
+            <dl id="scores">
+                <dt>Ultimos Puntajes...</dt> 
+                <dd>Ninguno</dd>
+
+            </dl>
+        </div>
+        
+    </div>
+    
+</body>
+</html>

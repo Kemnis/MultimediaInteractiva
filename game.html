@@ -17,10 +17,6 @@
 	var deltaTime;	
 	var keys = {};
 
-
-	//Variable de colisiones
-	var raycaster;
-
 	//Variable que identificara los objetos con los que se desea saber
 	// si se colisiona o no, entre mas objetos se tenga en el arreglo
 	//mas lento sera el rendimiento
@@ -29,63 +25,43 @@
 	var isWorldReady = [ false, false ];
 	$(document).ready(function() {
 
-		setupScene();
+		setupScene();;
+		
+		loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
+			planet1.position.y = -95;			
+			planet1.rotation.x = THREE.Math.degToRad(0);
+			planet1.scale.x =18;
+			planet1.scale.y =18;
+			planet1.scale.z =18;
 
-		//Objeto que nos sirve para la colision por "rayos"
-		raycaster = new THREE.Raycaster();
-
-		loadOBJWithMTL("assets/", "box.obj", "box.mtl", (object) => {
-			object.position.z = -30;			
-
-			var box2 = object.clone();
-			box2.position.x = 30;
-
-			var box3 = object.clone();
-			box3.position.x = -30;
-
-			var box4 = object.clone();
-			box4.position.z = 30;
-
-			var box5 = box4.clone();
-			box5.position.x = 30;
-
-			var box6 = box4.clone();
-			box6.position.x = -30;
+			scene.add(planet1);
 			
-			var box7 = object.clone();
-			box7.rotation.y = THREE.Math.degToRad(90);
-			box7.position.x = -40;
-			box7.position.z = 0;
-
-			var box8 = object.clone();
-			box8.rotation.y = THREE.Math.degToRad(90);
-			box8.position.x = 40;
-			box8.position.z = 0;
-
-			scene.add(object);
-			scene.add(box2);
-			scene.add(box3);
-			scene.add(box4);
-			scene.add(box5);
-			scene.add(box6);
-			scene.add(box7);
-			scene.add(box8);
-			
-			//Se agrega al¿ la coleccion de objetos con colision
-			objetosConColision.push(object);
-			objetosConColision.push(box2);
+			//Se agrega a la coleccion de objetos con colision
+			objetosConColision.push(planet1);
 
 			isWorldReady[0] = true;
 		});
 
-		loadOBJWithMTL("assets/", "jetski.obj", "jetski.mtl", (object) => {
-			object.position.z = -10;
-			object.rotation.x = THREE.Math.degToRad(-90);
+		loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (enemy) => {
+			enemy.position.z = -30;			
+			enemy.rotation.x = THREE.Math.degToRad(0);
 
-			scene.add(object);
+			scene.add(enemy);
+			
+			//Se agrega a la coleccion de objetos con colision
+			objetosConColision.push(enemy);
 
-			//Se agrega al¿ la coleccion de objetos con colision
-			objetosConColision.push(object);
+			isWorldReady[0] = true;
+		});
+
+		loadOBJWithMTL("assets/", "player.obj", "player.mtl", (player) => {
+			player.position.z = 0;
+			player.rotation.x = THREE.Math.degToRad(0);
+
+			scene.add(player);
+
+			//Se agrega a la coleccion de objetos con colision
+			objetosConColision.push(player);
 
 			isWorldReady[1] = true;
 		});
@@ -101,6 +77,12 @@
         object.position.x = PosX;
         object.position.y = PosY;
         object.position.z = PosZ;
+    }
+	function SetObjectRot(object,PosX,PosY,PosZ)
+    {
+		object.rotation.x = THREE.Math.degToRad(0);
+		object.rotation.y = THREE.Math.degToRad(0);
+		object.rotation.z = THREE.Math.degToRad(0);
     }
 
 	function loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
@@ -132,11 +114,6 @@
 
 		var yaw = 0;
 		var forward = 0;
-		if (keys["A"]) {
-			yaw = 5;
-		} else if (keys["D"]) {
-			yaw = -5;
-		}
 		if (keys["W"]) {
 			forward = -20;
 		} else if (keys["S"]) {
@@ -147,31 +124,6 @@
 			
 			camera.rotation.y += yaw * deltaTime;
 			camera.translateZ(forward * deltaTime);
-
-			//Recorremos los "rayos" a lanzar para detectar las colisiones
-			for(var i = 0; i < camera.rayos.length; i++)
-			{
-				//Lanzamos el rayo
-				//PAram1: desde donde se lanzara el rayo
-				//Param2: direccion que tendra el rayo
-				raycaster.set( camera.position, camera.rayos[i] );
-
-				//Verificar si el rayo ha colisionado con algun objeto.
-				//Param1: Es el objeto o coleccion de objetos con los cuales
-				// SI se puede colisionar
-				//Param2: Es para indicar que tambien evalue la colision con 
-				// los HIJOS de los objetos
-				//Para un solo objeto indicamos 
-				//raycaster.intersectObject(objeto);
-				//Para varios objetos sera en plural
-				var colision = raycaster.intersectObjects(objetosConColision,true);
-				if(colision.length > 0 && colision[0].distance < 1) {
-					camera.translateZ(-(forward * deltaTime));
-
-					console.log("COLISIONANDO!");
-
-				}
-			}
 		}
 		
 	
@@ -182,16 +134,10 @@
 		var visibleSize = { width: window.innerWidth, height: window.innerHeight};
 		clock = new THREE.Clock();		
 		scene = new THREE.Scene();
-		camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 100);
+		camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 600);
 		camera.position.z = 2;
-		camera.position.y = 5;
-
-		camera.rayos = [
-			new THREE.Vector3(1,0,0),
-			new THREE.Vector3(-1,0,0),
-			new THREE.Vector3(0,0,1),
-			new THREE.Vector3(0,0,-1)
-		];
+		camera.position.y = 50 ;
+		camera.rotation.x = THREE.Math.degToRad(-90);
 
 		renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
 		renderer.setClearColor(new THREE.Color(0, 0, 0));
