@@ -21,7 +21,7 @@
         }
         $(document).ready(function(){
             var video = document.getElementById('videoplayer');
-            var videoList=["Resources/1.mp4","Resources/2.mp4","Resources/3.mp4","Resources/4.mp4","Resources/5.mp4"];
+            var videoList=["Resources/2.mp4","Resources/3.mp4","Resources/4.mp4","Resources/5.mp4"];
             if(videoList)
             videoList.sort(function(a, b) {return 0.5 - Math.random()});
             var source = document.createElement('source');
@@ -29,37 +29,33 @@
             video.appendChild(source);
             // $("#videoplayer").html("<video id='rawvideo' loop muted autoplay poster='img/test.jpg' class='fullscreen-bg__video'><source src='" +  + "' type='video/mp4'></video>");
         });
-        function ControlsSH()
-        {
-            if($('#Controls').css('display') === 'block')
-            {
-                document.getElementById("Controls").style.display = "none";
-            }
-            else
-            {
-                document.getElementById("Controls").style.display = "block";
+        
+        function playSound() {
+            var audio = document.getElementById('audioplayer');
+            if (audio.paused) {
+                audio.play();
+            }else{
+                audio.pause();
             }
         }
     </script>
-    <!-- <script src="js/libs/vanillaJS/vanilla.js">
-            var modal = document.querySelector(".modal");
-            var trigger = document.querySelector(".playButton");
-            var closeButton = document.querySelector(".close");
-
-            function toggleModal() {
-                modal.classList.toggle("show-modal");
-            }
-
-            function windowOnClick(event) {
-                if (event.target === modal) {
-                    toggleModal();
-                }
-            }
-
-            trigger.addEventListener("click", toggleModal);
-            closeButton.addEventListener("click", toggleModal);
-            window.addEventListener("click", windowOnClick);
-        </script> -->
+    <div id="OptionsModal" class="modalOption">
+        <div class="modalOptionContent">
+            <span class="closeOptions">&times;</span>
+            <div class="wrapper2">
+                <h3 id="element1">Habilitar Musica</h3>
+                <label class="switch">  
+                <input type="checkbox" checked="True" onclick="playSound()">
+                <span  id="element3" class="slider round"></span>
+                </label>
+                <h3 id="element2">Habilitar Sonidos</h3>
+                <label class="switch">  
+                <input type="checkbox">
+                <span  id="element3" class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
     <div class="fullscreen-bg">
         <video id="videoplayer" loop muted autoplay poster="img/test.jpg" class="fullscreen-bg__video">
         </video>
@@ -69,14 +65,14 @@
             <img id="logoSource" src="Resources/Taurus Pilot.png" alt="Logo">
         </div>
         <div class="mainGrid" id="mainButtonsField">
-            <button id="aboutButton" onclick="document.getElementById('SignUp').style.display='block'">Acerca de...</button>
+            <button id="optionsButton">Opciones</button>
         </div>
         <div class="mainGrid" id="mainButtonsField">
-            <button id="playButton" onclick="document.getElementById('Start').style.display='block'">Empezar a jugar</button>
+                <button type="button" onclick="window.location.href = 'Controls.html'">Configurar controles</button>
         </div>
         <div class="mainGrid" id="musicPanel">
-            <audio id="audioplayer" controls loop autoplay><!-- autoplay-->
-                <source src="Resources/mainmenu2.mp3" type="audio/mpeg"/>
+            <audio id="audioplayer" loop autoplay ><!-- autoplay-->
+                <source src="Resources/mainmenu.mp3" type="audio/mpeg"/>
             </audio>
         </div>
         <div class="mainGrid mainScreen">
@@ -98,7 +94,7 @@
                 </div>
         
                 <div class="container playNow" >
-                    <button type="submit" onclick="window.location.href = 'game.html'">¡Jugar ahora!</button>
+                    <button type="button" onclick="window.location.href = 'game.html'">¡Jugar ahora!</button>
                 </div>
                 </form>
             </div>
@@ -118,19 +114,40 @@
                     </dd>             
                     <!-- other terms and definitions -->
                 </dl>
-                <button type="button" onclick="ControlsSH()">Controles</button>
-                <img id="Controls" src="Resources/Controls.png"/>
+                <button id="playButton" onclick="document.getElementById('Start').style.display='block'">Empezar a jugar</button>
             </div>
         </div>
         <div class="mainGrid" id="bottomBanner">
-            <dl id="scores">
-                <dt>Ultimos Puntajes...</dt> 
-                <dd>Ninguno</dd>
-
-            </dl>
+            <button id="Puntajes" type="button"onclick="window.location.href = 'Score.html'">Puntajes</button>
         </div>
         
     </div>
+    <script>
+            // ModalOptions
+            var modal = document.getElementById('OptionsModal');
     
+            // Get the button that opens the modal
+            var btn = document.getElementById("optionsButton");
+    
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("closeOptions")[0];
+    
+            // When the user clicks on the button, open the modal 
+            btn.onclick = function() {
+                modal.style.display = "block";
+            }
+    
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+    
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
 </body>
 </html>

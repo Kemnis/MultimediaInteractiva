@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/Controls.css" />
+    <script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
+    x    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        $(document).ready(function(){
+                var video = document.getElementById('videoplayer');
+                var videoList=["Resources/2.mp4","Resources/3.mp4","Resources/4.mp4","Resources/5.mp4"];
+                if(videoList)
+                videoList.sort(function(a, b) {return 0.5 - Math.random()});
+                var source = document.createElement('source');
+                source.setAttribute('src', videoList[0]);
+                video.appendChild(source);
+            });
+            function ControlsSH()
+            {
+                if($('#controls').css('display') === 'block')
+                {
+                    document.getElementById("controls").style.display = "none";
+                }
+                else
+                {
+                    document.getElementById("controls").style.display = "block";
+                }
+            }
+    </script>
+            <div class="fullscreen-bg">
+                <video id="videoplayer" loop muted autoplay poster="img/test.jpg" class="fullscreen-bg__video">
+                </video>
+            </div>
+            <div class="wrapper">
+                <div class="mainGrid" id="logoImg">
+                    <img id="logoSource" src="Resources/Taurus Pilot.png" alt="Logo">
+                </div>
+                <div class="mainGrid" id="gameName">
+                    <h1 id="gameName"> Taurus Pilot </h1>
+                </div>
+                <div class="mainGrid" id="controlsTable">
+                    <button type="button" onclick="ControlsSH()">Controles</button>
+                    <img src="Resources/Controls.png"/>
+                    <table id="controls" >
+                        <tr>
+                            <th>Player</th>
+                            <th>Action</th> 
+                            <th>Key</th>
+                        </tr>
+                        <tr>
+                            <td>Player1</td>
+                            <td>Move up</td> 
+                            <td>W</td>
+                        </tr>
+                        <tr>
+                            <td>Player1</td>
+                            <td>Move Down</td> 
+                            <td>S</td>
+                        </tr>
+                        <tr>
+                            <td>Player1</td>
+                            <td>Move left</td> 
+                            <td>A</td>
+                        </tr>
+                        <tr>
+                            <td>Player1</td>
+                            <td>Move Right</td> 
+                            <td>D</td>
+                        </tr>
+                        <tr>
+                            <td>Player1</td>
+                            <td>Shot</td> 
+                            <td>F</td>
+                        </tr>
+                        <tr>
+                            <td>Player2</td>
+                            <td>Move up</td> 
+                            <td>Up</td>
+                        </tr>
+                        <tr>
+                            <td>Player2</td>
+                            <td>Move Down</td> 
+                            <td>Down</td>
+                        </tr>
+                        <tr>
+                            <td>Player2</td>
+                            <td>Move left</td> 
+                            <td>Left</td>
+                        </tr>
+                        <tr>
+                            <td>Player2</td>
+                            <td>Move Right</td> 
+                            <td>Right</td>
+                        </tr>
+                        <tr>
+                            <td>Player2</td>
+                            <td>Shot</td> 
+                            <td>P</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="mainGrid" id="backField">
+                    <button id="backButton" onclick="window.location.href = 'index.html'">Volver a Inicio</button>
+                </div>
+            </div>
+</body>
+</html>

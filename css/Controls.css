@@ -1,0 +1,93 @@
+.fullscreen-bg {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: -100;
+}
+
+.fullscreen-bg__video {
+    position: absolute;
+    object-fit: fill;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/*CssGrid*/
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-template-areas: 
+    "a b b d"
+    "e f f g"
+    "e f f g"
+    "h j j k";
+}
+/* items */
+#logoImg {
+    grid-area: a;
+    min-width: 150px;
+    max-width: 200px;
+    min-height: 150;
+    max-height: 200px;
+}
+#gameName {
+    grid-area: b;
+    text-align: center;
+    color: rgb(0, 182, 97);
+}
+#logoSource {
+    width: 100%;
+    max-width: 150px;
+    height: 100%;
+    max-height: 150px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#controlsTable {
+    grid-area: f;
+    min-width: 500px;
+    min-height: 500px;
+}
+#controls {
+    width: 100%;
+    color: rgb(96, 248, 177);
+    background-color: rgba(2, 46, 241, 0.8); /* Black w/ opacity */
+    border: 3px solid rgb(1, 141, 255);
+    border-radius: 5%;
+}
+
+#backField {
+    grid-area: j;
+    min-width: 250px;
+    max-width: 750px;
+    min-height: 150;
+    max-height: 200px;
+}
+
+#backButton {
+    width: auto;
+    position: relative;
+    margin: auto;
+    display: block;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hardcode */
+/* Set a style for all buttons */
+button {
+    background-color: rgb(62, 85, 185);
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}

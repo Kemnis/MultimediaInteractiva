@@ -36,21 +36,21 @@
     grid-area: a;
     min-width: 150px;
     max-width: 200px;
-    min-height: 150;
+    min-height: 150px;
     max-height: 200px;
 }
 #aboutField {
     grid-area: b;
     min-width: 250px;
     max-width: 750px;
-    min-height: 150;
+    min-height: 150px;
     max-height: 200px;
 }
 #loginField {
     grid-area: c;
     min-width: 250px;
     max-width: 750px;
-    min-height: 150;
+    min-height: 150px;
     max-height: 200px;
 }
 #musicPanel {
@@ -160,6 +160,7 @@ img.avatar {
 
 #audioplayer {
     margin-top:20px;
+    display:none;
 }
 
 #description {
@@ -167,7 +168,7 @@ img.avatar {
     z-index: 1; /* Sit on top */
     color: rgb(0, 255, 106);
     font-size: 20px;
-    background-color: rgba(0.5,0.5,0.5,0.5); /* Black w/ opacity */
+    background-color: rgba(0.5,0.5,0.5,0.5);
 }
 #description > dl {
     padding-top: 45px; 
@@ -179,8 +180,10 @@ img.avatar {
     display:none;
 }
 
-#scores {
-    background-color: rgba(0.5,0.5,0.5,0.5); /* Black w/ opacity */
+#Puntajes {
+    background-color: rgb(63, 166, 192);
+    color: rgb(123, 255, 178);
+    font-size: 30px;
     margin-bottom: 80px;
 }
 
@@ -236,3 +239,133 @@ img.avatar {
     from {transform: scale(0)} 
     to {transform: scale(1)}
 }
+
+/* OptionsGrid */
+/*CssGrid*/
+.wrapper2 {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(2,1fr);
+    grid-template-areas: 
+    "a b"
+    "c d";
+}
+/* items */
+#element1 {
+    grid-area: a;
+    min-width: 150px;
+    max-width: 200px;
+    min-height: 40px;
+    max-height: 500px;
+}
+#element2 {
+    grid-area: c;
+    min-width: 150px;
+    max-width: 200px;
+    min-height: 40px;
+    max-height: 500px;
+}
+#element3 {
+    grid-area: b;
+}
+#element4 {
+    grid-area: d;
+}
+/* Options Modal */
+.modalOption {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modalOptionContent {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%; /* Could be more or less, depending on screen size */
+    min-height: 100px;
+    max-height: 500px;
+}
+
+/* The Close Button */
+.closeOptions {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.closeOptions:hover,
+.closeOptions:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {display:none;}
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
