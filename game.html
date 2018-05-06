@@ -1,9 +1,12 @@
 <html>
 <head>
-	
+	<meta charset="UTF-8">
 	<title>Taurus Pilot</title>
 	<script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="js/libs/three/three.js"></script>
+	<script type="text/javascript" src="js/libs/three/Player.js"></script>
+	<script type="text/javascript" src="js/libs/three/keyboard.js"></script>
+	<script type="text/javascript" src="js/libs/three/InputMapping.js"></script>
 	<script type="text/javascript" src="js/libs/three/MTLLoader.js"></script>
 	<script type="text/javascript" src="js/libs/three/OBJLoader.js"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
@@ -15,26 +18,24 @@
 	var controls;
 	var objects = [];
 	var clock;
-	var deltaTime;	
+	var deltaTime;
 	var keys = {};
+	var Jugador = new Player(1);
 
 	//Variable que identificara los objetos con los que se desea saber
 	// si se colisiona o no, entre mas objetos se tenga en el arreglo
 	//mas lento sera el rendimiento
 	var objetosConColision = [];
 
-	var isWorldReady = [ false, false ];
+	var isWorldReady = [ false,false ];
 	$(document).ready(function() {
 
-		setupScene();;
-		
+		setupScene();
 		loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
-			planet1.position.y = -95;			
-			planet1.rotation.x = THREE.Math.degToRad(0);
-			planet1.scale.x =18;
-			planet1.scale.y =18;
-			planet1.scale.z =18;
-
+			SetObjectPos(planet1,0,-95,0);		
+			SetObjectRot(planet1,90,0,0);	
+			SetObjectEsc(planet1,18,18,18);
+			
 			scene.add(planet1);
 			
 			//Se agrega a la coleccion de objetos con colision
@@ -44,29 +45,31 @@
 		});
 
 		loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (enemy) => {
-			enemy.position.z = -30;			
-			enemy.rotation.x = THREE.Math.degToRad(0);
+			SetObjectPos(enemy,0,0,-30);		
+			//SetObjectRot(enemy,0,0,0);	
+			//SetObjectEsc(enemy,0,0,0);
 
 			scene.add(enemy);
 			
 			//Se agrega a la coleccion de objetos con colision
 			objetosConColision.push(enemy);
 
-			isWorldReady[0] = true;
-		});
-
-		loadOBJWithMTL("assets/", "player.obj", "player.mtl", (player) => {
-			player.position.z = 0;
-			player.rotation.x = THREE.Math.degToRad(0);
-
-			scene.add(player);
-
-			//Se agrega a la coleccion de objetos con colision
-			objetosConColision.push(player);
-
 			isWorldReady[1] = true;
 		});
 
+		// loadOBJWithMTL("assets/", "player.obj", "player.mtl", (player) => {
+		// 	//SetObjectPos(player,0,0,0);		
+		// 	//SetObjectRot(player,0,0,0);	
+		// 	//SetObjectEsc(player,0,0,0);
+
+		// 	scene.add(player);
+
+		// 	//Se agrega a la coleccion de objetos con colision
+		// 	objetosConColision.push(player);
+
+		// 	isWorldReady[1] = true;
+		// });
+		playSound();
 		render();
 
 		document.addEventListener('keydown', onKeyDown);
@@ -79,11 +82,17 @@
         object.position.y = PosY;
         object.position.z = PosZ;
     }
-	function SetObjectRot(object,PosX,PosY,PosZ)
+	function SetObjectRot(object,RotX,RotY,RotZ)
     {
-		object.rotation.x = THREE.Math.degToRad(0);
-		object.rotation.y = THREE.Math.degToRad(0);
-		object.rotation.z = THREE.Math.degToRad(0);
+		object.rotation.x = THREE.Math.degToRad(RotX);
+		object.rotation.y = THREE.Math.degToRad(RotY);
+		object.rotation.z = THREE.Math.degToRad(RotZ);
+	}
+	function SetObjectEsc(object,EscX,EscY,EscZ)
+    {
+		object.scale.x = EscX;
+		object.scale.y = EscY;
+		object.scale.z = EscZ;
     }
 
 	function loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
@@ -126,8 +135,8 @@
 			camera.rotation.y += yaw * deltaTime;
 			camera.translateZ(forward * deltaTime);
 		}
-		
 	
+		scene.add(Jugador.ContainerObj[0]);
 		renderer.render(scene, camera);
 	}
 
@@ -137,7 +146,7 @@
 		scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 600);
 		camera.position.z = 2;
-		camera.position.y = 50 ;
+		camera.position.y = 50;
 		camera.rotation.x = THREE.Math.degToRad(-90);
 
 		renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
@@ -159,6 +168,19 @@
 		$("#scene-section").append(renderer.domElement);
 	}
 
+	function playSound() {
+            var audio = document.getElementById('audioplayer');
+            if (audio.paused) {
+				audio.play();
+            }else{
+                audio.pause();
+            }
+		}
+	
+	function tellme()
+	{
+		alert('Ready =' + isWorldReady + 'Rendereando');
+	}
 
 	</script>
 </head>
@@ -166,6 +188,9 @@
 <body>
 
 	<div id="scene-section"/>
+	<audio id="audioplayer" ><!-- autoplay--><!--猫又Call-->
+		<source src="Resources/Winning.mp3" type="audio/mpeg"/>
+	</audio>
 	<div id="OptionsModal" class="modalOption">
 			<div class="modalOptionContent">
 				<span class="closeOptions">&times;</span>
