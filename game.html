@@ -12,9 +12,6 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
 	<script type="text/javascript">
 
-	var scene;
-	var camera;
-	var renderer;
 	var controls;
 	var objects = [];
 	var clock;
@@ -27,146 +24,120 @@
 	//mas lento sera el rendimiento
 	var objetosConColision = [];
 
-	var isWorldReady = [ false,false ];
+	var isWorldReady = [ false ];
 	$(document).ready(function() {
-
-		setupScene();
-		loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
-			SetObjectPos(planet1,0,-95,0);		
-			SetObjectRot(planet1,90,0,0);	
-			SetObjectEsc(planet1,18,18,18);
+		Jugador._setupScene();
+		Jugador.sceneStart();
+		//setupScene();
+		// loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
+		// 	SetObjectPos(planet1,0,-95,0);		
+		// 	SetObjectRot(planet1,90,0,0);	
+		// 	SetObjectEsc(planet1,18,18,18);
 			
-			scene.add(planet1);
+		// 	scene.add(planet1);
 			
-			//Se agrega a la coleccion de objetos con colision
-			objetosConColision.push(planet1);
-
-			isWorldReady[0] = true;
-		});
-
-		loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (enemy) => {
-			SetObjectPos(enemy,0,0,-30);		
-			//SetObjectRot(enemy,0,0,0);	
-			//SetObjectEsc(enemy,0,0,0);
-
-			scene.add(enemy);
-			
-			//Se agrega a la coleccion de objetos con colision
-			objetosConColision.push(enemy);
-
-			isWorldReady[1] = true;
-		});
-
-		// loadOBJWithMTL("assets/", "player.obj", "player.mtl", (player) => {
-		// 	//SetObjectPos(player,0,0,0);		
-		// 	//SetObjectRot(player,0,0,0);	
-		// 	//SetObjectEsc(player,0,0,0);
-
-		// 	scene.add(player);
-
 		// 	//Se agrega a la coleccion de objetos con colision
-		// 	objetosConColision.push(player);
+		// 	objetosConColision.push(planet1);
 
-		// 	isWorldReady[1] = true;
+		// 	isWorldReady[0] = true;
 		// });
-		playSound();
-		render();
+		//playSound();
+		Jugador._Loop();
 
 		document.addEventListener('keydown', onKeyDown);
 		document.addEventListener('keyup', onKeyUp);		
 	});
 
-    function SetObjectPos(object,PosX,PosY,PosZ)
-    {
-        object.position.x = PosX;
-        object.position.y = PosY;
-        object.position.z = PosZ;
-    }
-	function SetObjectRot(object,RotX,RotY,RotZ)
-    {
-		object.rotation.x = THREE.Math.degToRad(RotX);
-		object.rotation.y = THREE.Math.degToRad(RotY);
-		object.rotation.z = THREE.Math.degToRad(RotZ);
-	}
-	function SetObjectEsc(object,EscX,EscY,EscZ)
-    {
-		object.scale.x = EscX;
-		object.scale.y = EscY;
-		object.scale.z = EscZ;
-    }
-
-	function loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
-		var mtlLoader = new THREE.MTLLoader();
-		mtlLoader.setPath(path);
-		mtlLoader.load(mtlFile, (materials) => {
-			
-			var objLoader = new THREE.OBJLoader();
-			objLoader.setMaterials(materials);
-			objLoader.setPath(path);
-			objLoader.load(objFile, (object) => {
-				onLoadCallback(object);
-			});
-
-		});
-	}
-
-	function onKeyDown(event) {
+    function onKeyDown(event) {
 		keys[String.fromCharCode(event.keyCode)] = true;
 	}
 	function onKeyUp(event) {
 		keys[String.fromCharCode(event.keyCode)] = false;
 	}
 
-	
-	function render() {
-		requestAnimationFrame(render);
-		deltaTime = clock.getDelta();	
-
-		var yaw = 0;
-		var forward = 0;
-		if (keys["W"]) {
-			forward = -20;
-		} else if (keys["S"]) {
-			forward = 20;
-		}
-
-		if (isWorldReady[0] && isWorldReady[1]) {
+	// function SetObjectPos(object,PosX,PosY,PosZ)
+    // {
+    //     object.position.x = PosX;
+    //     object.position.y = PosY;
+    //     object.position.z = PosZ;
+    // }
+	// function SetObjectRot(object,RotX,RotY,RotZ)
+    // {
+	// 	object.rotation.x = THREE.Math.degToRad(RotX);
+	// 	object.rotation.y = THREE.Math.degToRad(RotY);
+	// 	object.rotation.z = THREE.Math.degToRad(RotZ);
+	// }
+	// function SetObjectEsc(object,EscX,EscY,EscZ)
+    // {
+	// 	object.scale.x = EscX;
+	// 	object.scale.y = EscY;
+	// 	object.scale.z = EscZ;
+    // }
+    // function loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
+	// 	let mtlLoader = new THREE.MTLLoader();
+	// 	mtlLoader.setPath(path);
+	// 	mtlLoader.load(mtlFile, (materials) => {
 			
-			camera.rotation.y += yaw * deltaTime;
-			camera.translateZ(forward * deltaTime);
-		}
+	// 		let objLoader = new THREE.OBJLoader();
+	// 		objLoader.setMaterials(materials);
+	// 		objLoader.setPath(path);
+	// 		objLoader.load(objFile, (object) => {
+	// 			onLoadCallback(object);
+	// 		});
+
+    //     });
+    // }
 	
-		scene.add(Jugador.ContainerObj[0]);
-		renderer.render(scene, camera);
-	}
+	
+	// function render() {
+	// 	requestAnimationFrame(render);
+	// 	deltaTime = clock.getDelta();	
 
-	function setupScene() {		
-		var visibleSize = { width: window.innerWidth, height: window.innerHeight};
-		clock = new THREE.Clock();		
-		scene = new THREE.Scene();
-		camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 600);
-		camera.position.z = 2;
-		camera.position.y = 50;
-		camera.rotation.x = THREE.Math.degToRad(-90);
+	// 	var yaw = 0;
+	// 	var forward = 0;
+	// 	if (keys["W"]) {
+	// 		forward = -20;
+	// 	} else if (keys["S"]) {
+	// 		forward = 20;
+	// 	}
 
-		renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
-		renderer.setClearColor(new THREE.Color(0, 0, 0));
-		renderer.setPixelRatio(visibleSize.width / visibleSize.height);
-		renderer.setSize(visibleSize.width, visibleSize.height);
+	// 	if (isWorldReady[0]) {
+			
+	// 		camera.rotation.y += yaw * deltaTime;
+	// 		camera.translateZ(forward * deltaTime);
+	// 	}
+	// 	//scene.add(Jugador.ListObjs[0]);
+	// 	//scene.add(Jugador.ContainerObj[1]);
+	// 	renderer.render(scene, camera);
+	// }
 
-		var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
-		scene.add(ambientLight);
+	// function setupScene() {		
+	// 	var visibleSize = { width: window.innerWidth, height: window.innerHeight};
+	// 	clock = new THREE.Clock();		
+	// 	scene = new THREE.Scene();
+	// 	camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 600);
+	// 	camera.position.z = 2;
+	// 	camera.position.y = 50;
+	// 	camera.rotation.x = THREE.Math.degToRad(-90);
 
-		var directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 0), 0.4);
-		directionalLight.position.set(0, 0, 1);
-		scene.add(directionalLight);
+	// 	renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
+	// 	renderer.setClearColor(new THREE.Color(0, 0, 0));
+	// 	renderer.setPixelRatio(visibleSize.width / visibleSize.height);
+	// 	renderer.setSize(visibleSize.width, visibleSize.height);
 
-		var grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
-		grid.position.y = -1;
-		scene.add(grid);
+	// 	var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
+	// 	scene.add(ambientLight);
 
-		$("#scene-section").append(renderer.domElement);
-	}
+	// 	var directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 0), 0.4);
+	// 	directionalLight.position.set(0, 0, 1);
+	// 	scene.add(directionalLight);
+
+	// 	var grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
+	// 	grid.position.y = -1;
+	// 	scene.add(grid);
+
+		$("#scene-section").append(Jugador.renderer.domElement);
+	//}
 
 	function playSound() {
             var audio = document.getElementById('audioplayer');
@@ -188,8 +159,8 @@
 <body>
 
 	<div id="scene-section"/>
-	<audio id="audioplayer" ><!-- autoplay--><!--猫又Call-->
-		<source src="Resources/Winning.mp3" type="audio/mpeg"/>
+	<audio id="audioplayer" loop ><!-- autoplay--><!--猫又Call-->
+		<source src="Resources/Call.mp3" type="audio/mpeg"/>
 	</audio>
 	<div id="OptionsModal" class="modalOption">
 			<div class="modalOptionContent">

@@ -3,45 +3,43 @@ class Player{
         this.control = controllers;
         this.keyboard = new Keyboard();  
         this.defaultController = new InputMapping(this.keyboard);
-        this.ModelsToRender = 0;
-        this.ContainerObj = new Array();
-		loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
-			//SetObjectPos(planet1,0,-95,0);		
-			//SetObjectRot(planet1,90,0,0);	
-			//SetObjectEsc(planet1,18,18,18);
-			this.ContainerObj[this.ModelsToRender] = planet1;
-            this.ModelsToRender++;
-			//scene.add(planet1);
-		});
-
-		loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (enemy) => {
-			//SetObjectPos(enemy,0,0,-30);		
-			//SetObjectRot(enemy,0,0,0);	
-			//SetObjectEsc(enemy,0,0,0);
-            this.ContainerObj[this.ModelsToRender] = enemy;
-            this.ModelsToRender++;
-			//scene.add(enemy);
-		});
-
-        loadOBJWithMTL("assets/", "player.obj", "player.mtl", (player) => {
-            //SetObjectPos(player,0,0,0);		
-            //SetObjectRot(player,0,0,0);	
-            //SetObjectEsc(player,0,0,0);
-            this.ContainerObj[this.ModelsToRender] = player;
-            this.ModelsToRender++;
-            //scene.add(player);
-
-        });
-        
-        
+        this.ListObjs = new THREE.Object3D();
+        this.renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
+        this.visibleSize =  { width: window.innerWidth, height: window.innerHeight};
+        this.clock = new THREE.Clock();		
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(75, this.visibleSize.width / this.visibleSize.height, 0.1, 600);
     }
-    
-    _render() {
-        requestAnimationFrame(render);
-        deltaTime = clock.getDelta();	
 
-        var yaw = 0;
-        var forward = 0;
+    sceneStart()
+    {
+        this.loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
+			this.SetObjectPos(planet1,0,-95,0);		
+			this.SetObjectRot(planet1,90,0,0);	
+			this.SetObjectEsc(planet1,18,18,18);
+			this.scene.add(planet1);
+		});
+
+		this.loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (enemy) => {
+			this.SetObjectPos(enemy,0,0,-1);		
+			this.SetObjectRot(enemy,0,0,0);	
+			this.SetObjectEsc(enemy,0,0,0);
+			this.scene.add(enemy);
+		});
+
+        this.loadOBJWithMTL("assets/", "player.obj", "player.mtl", (player) => {
+            this.SetObjectPos(player,0,0,0);		
+            this.SetObjectRot(player,0,0,0);	
+            this.SetObjectEsc(player,0,0,0);
+            this.scene.add(player);
+        });
+    }
+
+    _Loop(){
+        deltaTime = this.clock.getDelta();	
+
+        let yaw = 0;
+        let forward = 0;
         if (keys["W"]) {
             forward = -20;
         } else if (keys["S"]) {
@@ -50,38 +48,40 @@ class Player{
 
         if (isWorldReady[0] && isWorldReady[1]) {
             
-            camera.rotation.y += yaw * deltaTime;
-            camera.translateZ(forward * deltaTime);
+            this.camera.rotation.y += yaw * deltaTime;
+            this.camera.translateZ(forward * deltaTime);
         }
     
-        scene.add(Jugador.ContainerObj[1]);
-        renderer.render(scene, camera);
+        this.renderer.render(this.scene, this.camera);
+        requestAnimationFrame(_Loop);
     }
 
+    onKeyDown(event) {
+		keys[String.fromCharCode(event.keyCode)] = true;
+	}
+	onKeyUp(event) {
+		keys[String.fromCharCode(event.keyCode)] = false;
+	}
+
     _setupScene() {		
-        var visibleSize = { width: window.innerWidth, height: window.innerHeight};
-        clock = new THREE.Clock();		
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 600);
-        camera.position.z = 2;
-        camera.position.y = 50;
-        camera.rotation.x = THREE.Math.degToRad(-90);
+        this.camera.position.z = 2;
+        this.camera.position.y = 50;
+        this.camera.rotation.x = THREE.Math.degToRad(-90);
 
-        renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
-        renderer.setClearColor(new THREE.Color(0, 0, 0));
-        renderer.setPixelRatio(visibleSize.width / visibleSize.height);
-        renderer.setSize(visibleSize.width, visibleSize.height);
+        this.renderer.setClearColor(new THREE.Color(0, 0, 0));
+        this.renderer.setPixelRatio(this.visibleSize.width / this.visibleSize.height);
+        this.renderer.setSize(this.visibleSize.width, this.visibleSize.height);
 
-        var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
-        scene.add(ambientLight);
+        let ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
+        this.scene.add(ambientLight);
 
-        var directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 0), 0.4);
+        let directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 0), 0.4);
         directionalLight.position.set(0, 0, 1);
-        scene.add(directionalLight);
+        this.scene.add(directionalLight);
 
-        var grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
+        let grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
         grid.position.y = -1;
-        scene.add(grid);
+        this.scene.add(grid);
     }
     
     SetObjectPos(object,PosX,PosY,PosZ)
