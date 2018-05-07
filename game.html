@@ -12,17 +12,17 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
 	<script type="text/javascript">
 
-	var controls;
-	var objects = [];
-	var clock;
-	var deltaTime;
+	// var controls;
+	// var objects = [];
+	// var clock;
+	// var deltaTime;
 	var keys = {};
 	var Jugador = new Player(1);
 
 	//Variable que identificara los objetos con los que se desea saber
 	// si se colisiona o no, entre mas objetos se tenga en el arreglo
 	//mas lento sera el rendimiento
-	var objetosConColision = [];
+	//var objetosConColision = [];
 
 	var isWorldReady = [ false ];
 	$(document).ready(function() {
@@ -43,7 +43,7 @@
 		// });
 		//playSound();
 		Jugador._Loop();
-
+		$("#scene-section").append(Jugador.renderer.domElement);
 		document.addEventListener('keydown', onKeyDown);
 		document.addEventListener('keyup', onKeyUp);		
 	});
@@ -136,7 +136,7 @@
 	// 	grid.position.y = -1;
 	// 	scene.add(grid);
 
-		$("#scene-section").append(Jugador.renderer.domElement);
+	//	$("#scene-section").append(Jugador.renderer.domElement);
 	//}
 
 	function playSound() {
