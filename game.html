@@ -4,11 +4,12 @@
 	<title>Taurus Pilot</title>
 	<script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="js/libs/three/three.js"></script>
-	<script type="text/javascript" src="js/libs/three/Player.js"></script>
 	<script type="text/javascript" src="js/libs/three/keyboard.js"></script>
 	<script type="text/javascript" src="js/libs/three/InputMapping.js"></script>
 	<script type="text/javascript" src="js/libs/three/MTLLoader.js"></script>
 	<script type="text/javascript" src="js/libs/three/OBJLoader.js"></script>
+	<script type="text/javascript" src="js/libs/three/Game.js"></script>
+	<script type="text/javascript" src="js/libs/three/Player.js"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
 	<script type="text/javascript">
 
@@ -17,7 +18,7 @@
 	// var clock;
 	// var deltaTime;
 	var keys = {};
-	var Jugador = new Player(1);
+	var Jugador = new Game(1);
 
 	//Variable que identificara los objetos con los que se desea saber
 	// si se colisiona o no, entre mas objetos se tenga en el arreglo
@@ -44,16 +45,18 @@
 		//playSound();
 		Jugador._Loop();
 		$("#scene-section").append(Jugador.renderer.domElement);
-		document.addEventListener('keydown', onKeyDown);
-		document.addEventListener('keyup', onKeyUp);		
+		//document.addEventListener('keydown', onKeyDown);
+		//document.addEventListener('keyup', onKeyUp);		
 	});
 
+/*
     function onKeyDown(event) {
 		keys[String.fromCharCode(event.keyCode)] = true;
 	}
 	function onKeyUp(event) {
 		keys[String.fromCharCode(event.keyCode)] = false;
 	}
+	*/
 
 	// function SetObjectPos(object,PosX,PosY,PosZ)
     // {
