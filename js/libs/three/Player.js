@@ -14,7 +14,7 @@ class Player{
     }
 
     start(){
-
+        this.scale.set(.5,.5,.5);
     }
 
     input(controller){
@@ -52,7 +52,7 @@ class Player{
                 let friction = this.vel.clone();
                 friction.multiplyScalar(-1);
                 friction.normalize();
-                friction.multiplyScalar(5);
+                friction.multiplyScalar(15);
                 this.applyForce(friction);
             }
             else {
@@ -71,6 +71,5 @@ class Player{
             let axis = new THREE.Vector3(1, 0, 0);
             this.mesh.quaternion.setFromUnitVectors(axis, faceDirection.clone().normalize());
         }
-        // this.position.x += 1 * dt;
     }
 }

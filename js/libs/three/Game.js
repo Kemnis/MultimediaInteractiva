@@ -3,6 +3,7 @@ class Game{
         this.OTPlayer = controllers;
         this.players = [];
         this.enemys = [];
+        this.asteroids = [];
         this.playerControllers = [];
         this.keyboard = new Keyboard();
         this.defaultController = new InputMapping(this.keyboard);
@@ -12,10 +13,29 @@ class Game{
         this.camera = new THREE.PerspectiveCamera(75, this.visibleSize.width / this.visibleSize.height, 0.1, 600);
         this.clock = new THREE.Clock();	
         this.scene = new THREE.Scene();
+        this.MaxAsteroids = THREE.Math.randInt(5,15);
         this.paused = false;
     }
 
     sceneStart(){
+        if (THREE.Math.randInt(0,2) == 0)
+        {
+            this.loadOBJWithMTL("assets/", "background.obj", "background1.mtl", (back) => {
+                this.SetObjectPos(back,0,-95,0);
+                this.SetObjectRot(back,0,180,0);
+                this.SetObjectEsc(back,380,380,380);
+                this.scene.add(back);
+            });
+        }
+        else
+        {
+            this.loadOBJWithMTL("assets/", "background.obj", "background2.mtl", (back) => {
+                this.SetObjectPos(back,0,-95,0);
+                this.SetObjectRot(back,0,180,0);
+                this.SetObjectEsc(back,380,380,380);
+                this.scene.add(back);
+            });
+        }
         this.loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
 			this.SetObjectPos(planet1,0,-95,0);
 			this.SetObjectRot(planet1,90,0,0);
@@ -25,7 +45,12 @@ class Game{
 
 		this.loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (object) => {
 			let enemy = new Enemy(object);
-            enemy.position.set(0, 0, -10);
+            this.enemys.push(enemy);
+            this.scene.add(object);
+        });
+        
+        this.loadOBJWithMTL("assets/", "enemy.obj", "enemy2.mtl", (object) => {
+			let enemy = new Enemy(object);
             this.enemys.push(enemy);
             this.scene.add(object);
 		});
@@ -35,24 +60,56 @@ class Game{
             this.scene.add(object);
         });
 
-        this.loadOBJWithMTL("assets/", "player2.obj", "player2.mtl", (object) => {
+        this.loadOBJWithMTL("assets/", "player.obj", "player2.mtl", (object) => {
             let player = new Player(1, object);
             player.position.set(0, 0, 10);
             this.players.push(player);
             this.scene.add(object);
         });
+
+        for (let total = 0 ; total < this.MaxAsteroids; total++) {
+            let texture = THREE.Math.randInt(0,4);
+            if (texture == 0)
+            {
+                this.loadOBJWithMTL("assets/", "planet1.obj", "asteroid1.mtl", (object) => {
+                    this.asteroids.push(new Asteroid(object));
+                    this.scene.add(object);
+                });
+            }
+            else if (texture == 1){
+                this.loadOBJWithMTL("assets/", "planet1.obj", "asteroid2.mtl", (object) => {
+                    this.asteroids.push(new Asteroid(object));
+                    this.scene.add(object);
+                });
+            }
+            else if (texture == 2){
+                this.loadOBJWithMTL("assets/", "planet1.obj", "asteroid3.mtl", (object) => {
+                    this.asteroids.push(new Asteroid(object));
+                    this.scene.add(object);
+                });
+            }
+            else if (texture == 3){
+                this.loadOBJWithMTL("assets/", "planet1.obj", "asteroid4.mtl", (object) => {
+                    this.asteroids.push(new Asteroid(object));
+                    this.scene.add(object);
+                });
+            }
+        }
+
         this.playerControllers.push( new InputMapping(this.keyboard, {
             'Left': 'A',
             'Right': 'D',
             'Up': 'W',
-            'Down': 'S'
+            'Down': 'S',
+            'Shoot': '2'
         }));
 
         this.playerControllers.push(new InputMapping(this.keyboard, {
             'Left': 'left',
             'Right': 'right',
             'Up': 'up',
-            'Down': 'down'
+            'Down': 'down',
+            'Shoot': '0'
         }));
     }
 
@@ -71,11 +128,11 @@ class Game{
 
         let yaw = 0;
         let forward = 0;
-        if (this.keyboard.pressed('1')){
+        if (this.keyboard.pressed('M')){
             forward = -50;
             this.camera.translateZ(forward * dt);
         }
-        else if (this.keyboard.pressed('2')) {
+        else if (this.keyboard.pressed('N')) {
             forward = 50;
             this.camera.translateZ(forward * dt);
         }
@@ -87,6 +144,12 @@ class Game{
     update(dt){
         for(let player of this.players){
             player.update(dt);
+        }
+        for(let asteroid of this.asteroids){
+            asteroid.update(dt);
+        }
+        for(let enemy of this.enemys){
+            enemy.update(dt);
         }
     }
 
@@ -137,7 +200,7 @@ class Game{
         this.camera.position.y = 50;
         this.camera.rotation.x = THREE.Math.degToRad(-90);
 
-        this.renderer.setClearColor(new THREE.Color(0, 0, 0));
+        this.renderer.setClearColor(new THREE.Color(0, 0, 0, 0));
         this.renderer.setPixelRatio(this.visibleSize.width / this.visibleSize.height);
         this.renderer.setSize(this.visibleSize.width, this.visibleSize.height);
 
@@ -148,9 +211,9 @@ class Game{
         directionalLight.position.set(0, 0, 1);
         this.scene.add(directionalLight);
 
-        let grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
-        grid.position.y = -1;
-        this.scene.add(grid);
+        //let grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
+        //grid.position.y = -1;
+        //this.scene.add(grid);
     }
     
     SetObjectPos(object,PosX,PosY,PosZ){
