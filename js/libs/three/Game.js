@@ -5,6 +5,7 @@ class Game{
         this.enemys = [];
         this.asteroids = [];
         this.playerControllers = [];
+        this.planet = new THREE.Mesh;
         this.keyboard = new Keyboard();
         this.defaultController = new InputMapping(this.keyboard);
         this.ListObjs = new THREE.Object3D();
@@ -13,7 +14,7 @@ class Game{
         this.camera = new THREE.PerspectiveCamera(75, this.visibleSize.width / this.visibleSize.height, 0.1, 600);
         this.clock = new THREE.Clock();	
         this.scene = new THREE.Scene();
-        this.MaxAsteroids = THREE.Math.randInt(5,15);
+        this.MaxAsteroids = THREE.Math.randInt(1,15);
         this.paused = false;
     }
 
@@ -39,8 +40,9 @@ class Game{
         this.loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
 			this.SetObjectPos(planet1,0,-95,0);
 			this.SetObjectRot(planet1,90,0,0);
-			this.SetObjectEsc(planet1,18,18,18);
-			this.scene.add(planet1);
+            this.SetObjectEsc(planet1,18,18,18);
+            this.planet = planet1;
+			this.scene.add(this.planet);
 		});
 
 		this.loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (object) => {
@@ -128,14 +130,21 @@ class Game{
 
         let yaw = 0;
         let forward = 0;
-        if (this.keyboard.pressed('M')){
+        if (this.keyboard.pressed('I')){
             forward = -50;
             this.camera.translateZ(forward * dt);
         }
-        else if (this.keyboard.pressed('N')) {
+        else if (this.keyboard.pressed('K')) {
             forward = 50;
             this.camera.translateZ(forward * dt);
         }
+        if (this.keyboard.pressed("J")) {
+			yaw = -50;
+            this.camera.translateX(yaw * dt);
+		} else if (this.keyboard.pressed("L")) {
+			yaw = 50;
+            this.camera.translateX(yaw * dt);
+		}
 
         //self.camera.rotation.y += yaw * dt;
         
@@ -151,6 +160,7 @@ class Game{
         for(let enemy of this.enemys){
             enemy.update(dt);
         }
+        //this.planet.rotation.y += this.players[].angle;
     }
 
     render(){

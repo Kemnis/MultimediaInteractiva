@@ -5,7 +5,9 @@ class Player{
         this.playerId = playerId;
         this.position = mesh.position;
         this.rotation = mesh.rotation;
-        this.scale = mesh.scale;      
+        this.scale = mesh.scale; 
+        this.angle = 0;     
+        this.radius = 10;
         this.vel = new THREE.Vector3();
         this.acel = new THREE.Vector3();
 
@@ -21,7 +23,18 @@ class Player{
         let force = 50;
         this.isAcelerating = false;
         if(controller.pressed('Left')){
-            this.applyForce(new THREE.Vector3(-force, 0, 0));
+            //Calculate angle
+            let npos = this.position;
+            let nacel = new Vector3();
+            nacel.add(force);
+            if (nacel.x > 0)
+            {
+                
+            }
+            this.angle =1;
+            console.log("Angle" + this.angle, " Radius" + this.radius);
+            //this.applyForce(new THREE.Vector3(-force, 0, 0));
+            this.applyForce(new THREE.Vector3(Math.cos((this.position.x /this.radius))*this.radius, 0, Math.sin((this.position.y /this.radius))*this.radius));
             this.isAcelerating = true;
         }
 

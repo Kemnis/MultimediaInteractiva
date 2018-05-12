@@ -7,11 +7,10 @@ class Asteroid{
         this.scale = mesh.scale;      
         this.vel = new THREE.Vector3();
         this.acel = new THREE.Vector3();
-        this.rot = new THREE.Vector3();
-        this.initialForce = THREE.Math.randFloat(.001,.1);
-        this.initialRotation = THREE.Math.randFloat(.001,.01);
-        this.direction = THREE.Math.randInt(0,6);
-        this.isAcelerating = false;
+        this.IX = THREE.Math.randFloat(-.1,.1);
+        this.IZ = THREE.Math.randFloat(-.1,.1);
+        this.initialRotation = THREE.Math.randFloat(-.1,.1);
+        this.direction = THREE.Math.randInt(0,2);
         this.start();
     }
 
@@ -25,40 +24,23 @@ class Asteroid{
         this.acel.add(force);
     }
 
-    Rotate() {
-        if (this.direction == 0)
-        {
-            this.rotation.x -= this.initialRotation;
-            this.applyForce(new THREE.Vector3(-this.initialForce, 0, 0));
-        }
-        else if (this.direction == 1)
-        {
-            this.rotation.x += this.initialRotation;
-            this.applyForce(new THREE.Vector3(this.initialForce, 0, 0));
-        }
-        else if (this.direction == 2)
-        {
-            this.rotation.y -= this.initialRotation;
-        }
-        else if (this.direction == 3)
-        {
-            this.rotation.y += this.initialRotation;
-        }
-        else if (this.direction == 4)
-        {
-            this.rotation.z -= this.initialRotation;
-            this.applyForce(new THREE.Vector3(0, 0, -this.initialForce));
-        }
-        else if (this.direction == 5)
-        {
-            this.rotation.z += this.initialRotation;
-            this.applyForce(new THREE.Vector3(0, 0, this.initialForce));
-        }
+    applyImpulse(force) {
+        this.vel.add(force);
     }
 
     acelerate()
     {
         this.isAcelerating = true;
+    }
+
+    Go()
+    {
+        if (this.direction == 0)
+            this.rotation.x+=this.initialRotation;
+        else if (this.direction == 1)
+            this.rotation.y+=this.initialRotation;
+        else if (this.direction == 2)
+            this.rotation.z+=this.initialRotation;
     }
 
     update(dt){
@@ -74,7 +56,9 @@ class Asteroid{
         //         this.vel.set(0, 0, 0);
         //     }
         // }
-        this.Rotate();
+        this.Go();
+        this.applyImpulse(new THREE.Vector3(this.IX, 0, this.IZ));
+        
         this.acelerate();
         this.vel.addScaledVector(this.acel, dt);
         this.vel.clampLength(0, .8);                
