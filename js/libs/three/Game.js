@@ -1,3 +1,5 @@
+
+
 class Game{
     constructor(controllers){
         this.OTPlayer = controllers;
@@ -14,7 +16,7 @@ class Game{
         this.camera = new THREE.PerspectiveCamera(75, this.visibleSize.width / this.visibleSize.height, 0.1, 600);
         this.clock = new THREE.Clock();	
         this.scene = new THREE.Scene();
-        this.MaxAsteroids = THREE.Math.randInt(1,15);
+        this.MaxAsteroids = THREE.Math.randInt(1,1);
         this.paused = false;
     }
 
@@ -42,7 +44,7 @@ class Game{
 			this.SetObjectRot(planet1,90,0,0);
             this.SetObjectEsc(planet1,18,18,18);
             this.planet = planet1;
-			this.scene.add(this.planet);
+			//this.scene.add(this.planet);
 		});
 
 		this.loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (object) => {
@@ -59,12 +61,13 @@ class Game{
 
         this.loadOBJWithMTL("assets/", "player.obj", "player.mtl", (object) => {
             this.players.push(new Player(0, object));
+            this.scene.add(this.players[0].groupVision);
             this.scene.add(object);
         });
-
+        
         this.loadOBJWithMTL("assets/", "player.obj", "player2.mtl", (object) => {
             let player = new Player(1, object);
-            player.position.set(0, 0, 10);
+            player.position.set(0, 0, 0);
             this.players.push(player);
             this.scene.add(object);
         });
@@ -144,12 +147,20 @@ class Game{
 		} else if (this.keyboard.pressed("L")) {
 			yaw = 50;
             this.camera.translateX(yaw * dt);
-		}
+        }
+        // if (this.keyboard.pressed("M")) {
+		// 	yaw = -50;
+        //     this.camera.rotate.y(yaw * dt);
+		// } else if (this.keyboard.pressed("N")) {
+		// 	yaw = 50;
+        //     this.camera.rotate.y(yaw * dt);
+		// }
+
 
         //self.camera.rotation.y += yaw * dt;
         
     }
-
+    
     update(dt){
         for(let player of this.players){
             player.update(dt);
