@@ -17,6 +17,7 @@ class Game{
         this.clock = new THREE.Clock();	
         this.scene = new THREE.Scene();
         this.MaxAsteroids = THREE.Math.randInt(1,1);
+        this.camerangle = 1;
         this.paused = false;
     }
 
@@ -148,13 +149,16 @@ class Game{
 			yaw = 50;
             this.camera.translateX(yaw * dt);
         }
-        // if (this.keyboard.pressed("M")) {
-		// 	yaw = -50;
-        //     this.camera.rotate.y(yaw * dt);
-		// } else if (this.keyboard.pressed("N")) {
-		// 	yaw = 50;
-        //     this.camera.rotate.y(yaw * dt);
-		// }
+        if (this.keyboard.pressed("V")) {
+            this.camera.rotateY(THREE.Math.degToRad(this.camerangle));
+		} else if (this.keyboard.pressed("N")) {
+            this.camera.rotateY(THREE.Math.degToRad(-this.camerangle));
+        }
+        if (this.keyboard.pressed("G")) {
+            this.camera.rotateX(THREE.Math.degToRad(this.camerangle));
+		} else if (this.keyboard.pressed("B")) {
+            this.camera.rotateX(THREE.Math.degToRad(-this.camerangle));
+		}
 
 
         //self.camera.rotation.y += yaw * dt;

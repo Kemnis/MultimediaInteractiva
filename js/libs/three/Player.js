@@ -7,6 +7,7 @@ class Player{
         this.rotation = mesh.rotation;
         this.scale = mesh.scale; 
         this.theta = 90;     
+        this.dirangle = 0;     
         this.rho = 10;     
         this.radius = 50;
         this.radiusdir = 10;
@@ -23,8 +24,8 @@ class Player{
         this.scale.set(.5,.5,.5);
         this.position.set(this.radius * Math.sin(this.theta) * Math.sin(this.rho),this.radius * Math.cos(this.theta),this.radius * Math.sin(this.theta) * Math.cos(this.rho));
         this.meshDirection.position.set(this.position.x+10,this.position.y,this.position.z);
-        this.groupVision.add(this.mesh);
         this.groupVision.add(this.meshDirection);
+        this.groupVision.add(this.mesh);
     }
 
     input(controller){
@@ -33,16 +34,18 @@ class Player{
         if(controller.pressed('Left')){
             //Calculate angle
             this.theta -= 0.01;
-            this.rotation.set(0,this.theta,0)
-            this.groupVision.position.set((this.radiusdir * Math.sin(this.theta) * Math.sin(this.rho))-this.position.x,(this.radiusdir * Math.cos(this.theta))-this.position.y,(this.radiusdir * Math.sin(this.theta) * Math.cos(this.rho))-this.position.z);
+            //this.rotation.set(0,this.theta,0)
+            this.groupVision.position.set((this.radiusdir * Math.sin(this.theta)/* * Math.sin(this.rho)*/)-10,/*(this.radiusdir * Math.cos(this.theta))*/0,(this.radiusdir * Math.cos(this.theta) /** Math.cos(this.rho)*/));
             //this.position.set(this.radius * Math.sin(this.theta) * Math.sin(this.rho),this.radius * Math.cos(this.theta),this.radius * Math.sin(this.theta) * Math.cos(this.rho));
             //console.log("Angle" + this.theta, " Radius" + this.radius);
             //this.applyForce(new THREE.Vector3(-force, 0, 0));
-        this.isAcelerating = true;
+            this.isAcelerating = true;
         }
 
         if(controller.pressed('Right')){
-            this.applyForce(new THREE.Vector3(force, 0, 0));
+            this.theta += 0.01;
+            this.position.set(this.radius * Math.sin(this.theta) * Math.sin(this.rho),this.radius * Math.cos(this.theta),this.radius * Math.sin(this.theta) * Math.cos(this.rho));
+            //this.applyForce(new THREE.Vector3(force, 0, 0));
             this.isAcelerating = true;
         }
 
