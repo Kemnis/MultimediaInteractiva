@@ -61,13 +61,13 @@ class Game{
 		});
 
         this.loadOBJWithMTL("assets/", "player.obj", "player.mtl", (object) => {
-            this.players.push(new Player(0, object));
+            this.players.push(new Player(0, object, this.scene));
             this.scene.add(this.players[0].groupVision);
             this.scene.add(object);
         });
         
         this.loadOBJWithMTL("assets/", "player.obj", "player2.mtl", (object) => {
-            let player = new Player(1, object);
+            let player = new Player(1, object, this.scene);
             player.position.set(0, 0, 0);
             this.players.push(player);
             this.scene.add(object);
