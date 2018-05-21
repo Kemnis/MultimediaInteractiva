@@ -9,142 +9,48 @@
 	<script type="text/javascript" src="js/libs/three/MTLLoader.js"></script>
 	<script type="text/javascript" src="js/libs/three/OBJLoader.js"></script>
 	<script type="text/javascript" src="js/libs/three/Game.js"></script>
-	<!-- <script type="text/javascript" src="js/libs/three/Player.js"></script> -->
-	<script type="text/javascript" src="js/libs/three/Player2.js"></script>
+	<script type="text/javascript" src="js/libs/three/Player.js"></script>
+	<script type="text/javascript" src="js/libs/three/Background.js"></script>
 	<script type="text/javascript" src="js/libs/three/Enemy.js"></script>
 	<script type="text/javascript" src="js/libs/three/Asteroid.js"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
 	<script type="text/javascript">
-
-	// var controls;
-	// var objects = [];
-	// var clock;
-	// var deltaTime;
-	var keys = {};
 	var Jugador = new Game(1);
+	var scoreold=0;
+	var score=0;
+	var timeleft = -5;
+	var startGame = false;
+	var downloadTimer = setInterval(function(){
+	changeProgress(-100 + ++timeleft)
+	if(timeleft == 1)
+	{
+		startGame = true;
+		$("#progress").empty();
+		Jugador.getVars(timeleft,startGame);
+		//playSound();
+	}
+		score = Jugador.score;
+		scoreold = score;
+        console.log("score:" + score);
+	if(timeleft >= 100)
+		clearInterval(downloadTimer);
+	},1195);//1195
+	
+	if(scoreold != score)
+	{
+		constructScore();
+	}
 
-	//Variable que identificara los objetos con los que se desea saber
-	// si se colisiona o no, entre mas objetos se tenga en el arreglo
-	//mas lento sera el rendimiento
-	//var objetosConColision = [];
+	var keys = {};
 
 	var isWorldReady = [ false ];
 	$(document).ready(function() {
 		Jugador._setupScene();
 		Jugador.sceneStart();
-		//setupScene();
-		// loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
-		// 	SetObjectPos(planet1,0,-95,0);		
-		// 	SetObjectRot(planet1,90,0,0);	
-		// 	SetObjectEsc(planet1,18,18,18);
-			
-		// 	scene.add(planet1);
-			
-		// 	//Se agrega a la coleccion de objetos con colision
-		// 	objetosConColision.push(planet1);
-
-		// 	isWorldReady[0] = true;
-		// });
-		//playSound();
 		Jugador._Loop();
 		$("#scene-section").append(Jugador.renderer.domElement);
-		//document.addEventListener('keydown', onKeyDown);
-		//document.addEventListener('keyup', onKeyUp);		
 	});
-
-/*
-    function onKeyDown(event) {
-		keys[String.fromCharCode(event.keyCode)] = true;
-	}
-	function onKeyUp(event) {
-		keys[String.fromCharCode(event.keyCode)] = false;
-	}
-	*/
-
-	// function SetObjectPos(object,PosX,PosY,PosZ)
-    // {
-    //     object.position.x = PosX;
-    //     object.position.y = PosY;
-    //     object.position.z = PosZ;
-    // }
-	// function SetObjectRot(object,RotX,RotY,RotZ)
-    // {
-	// 	object.rotation.x = THREE.Math.degToRad(RotX);
-	// 	object.rotation.y = THREE.Math.degToRad(RotY);
-	// 	object.rotation.z = THREE.Math.degToRad(RotZ);
-	// }
-	// function SetObjectEsc(object,EscX,EscY,EscZ)
-    // {
-	// 	object.scale.x = EscX;
-	// 	object.scale.y = EscY;
-	// 	object.scale.z = EscZ;
-    // }
-    // function loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
-	// 	let mtlLoader = new THREE.MTLLoader();
-	// 	mtlLoader.setPath(path);
-	// 	mtlLoader.load(mtlFile, (materials) => {
-			
-	// 		let objLoader = new THREE.OBJLoader();
-	// 		objLoader.setMaterials(materials);
-	// 		objLoader.setPath(path);
-	// 		objLoader.load(objFile, (object) => {
-	// 			onLoadCallback(object);
-	// 		});
-
-    //     });
-    // }
 	
-	
-	// function render() {
-	// 	requestAnimationFrame(render);
-	// 	deltaTime = clock.getDelta();	
-
-	// 	var yaw = 0;
-	// 	var forward = 0;
-	// 	if (keys["W"]) {
-	// 		forward = -20;
-	// 	} else if (keys["S"]) {
-	// 		forward = 20;
-	// 	}
-
-	// 	if (isWorldReady[0]) {
-			
-	// 		camera.rotation.y += yaw * deltaTime;
-	// 		camera.translateZ(forward * deltaTime);
-	// 	}
-	// 	//scene.add(Jugador.ListObjs[0]);
-	// 	//scene.add(Jugador.ContainerObj[1]);
-	// 	renderer.render(scene, camera);
-	// }
-
-	// function setupScene() {		
-	// 	var visibleSize = { width: window.innerWidth, height: window.innerHeight};
-	// 	clock = new THREE.Clock();		
-	// 	scene = new THREE.Scene();
-	// 	camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 600);
-	// 	camera.position.z = 2;
-	// 	camera.position.y = 50;
-	// 	camera.rotation.x = THREE.Math.degToRad(-90);
-
-	// 	renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
-	// 	renderer.setClearColor(new THREE.Color(0, 0, 0));
-	// 	renderer.setPixelRatio(visibleSize.width / visibleSize.height);
-	// 	renderer.setSize(visibleSize.width, visibleSize.height);
-
-	// 	var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
-	// 	scene.add(ambientLight);
-
-	// 	var directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 0), 0.4);
-	// 	directionalLight.position.set(0, 0, 1);
-	// 	scene.add(directionalLight);
-
-	// 	var grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
-	// 	grid.position.y = -1;
-	// 	scene.add(grid);
-
-	//	$("#scene-section").append(Jugador.renderer.domElement);
-	//}
-
 	function playSound() {
             var audio = document.getElementById('audioplayer');
             if (audio.paused) {
@@ -154,18 +60,41 @@
             }
 		}
 	
-	function tellme()
-	{
-		alert('Ready =' + isWorldReady + 'Rendereando');
+	function changeProgress(percent){
+		var bgColor = "";
+		if (percent >= -25)
+		{
+			bgColor = "red";
+		}
+		else if (percent >= -50)
+		{
+			bgColor = "orange";
+		}
+		else if (percent >= -75)
+		{
+			bgColor = "green";
+		}
+		else if (percent <= -100)
+		{
+			bgColor = "pink";
+		}
+		else
+		{
+			bgColor = "blue";
+		}
+		
+		
+	var progress=document.getElementById("progress");
+	progress.style.backgroundPosition=percent+"%";
+	progress.style.backgroundColor=bgColor;
 	}
-
 	</script>
 </head>
 
 <body>
 
 	<div id="scene-section"/>
-	<audio id="audioplayer" loop ><!-- autoplay--><!--猫又Call-->
+	<audio id="audioplayer" ><!-- autoplay--><!--猫又Call-->
 		<source src="Resources/Call.mp3" type="audio/mpeg"/>
 	</audio>
 	<div id="OptionsModal" class="modalOption">
@@ -174,7 +103,7 @@
 				<div class="wrapper2">
 					<h3 id="element1">Habilitar Musica</h3>
 					<label class="switch">  
-					<input type="checkbox" checked="True" onclick="playSound()">
+					<input type="checkbox" checked="False" onclick="playSound()">
 					<span  id="element3" class="slider round"></span>
 					</label>
 					<h3 id="element2">Habilitar Sonidos</h3>
@@ -187,6 +116,15 @@
 		</div>
 		<div id="pauseButton">
 				<button id="pause">Pausar</button>
+				<div class="progress">
+					<div id="progress" class="line stripesLoader" style="background-position:100%;
+					background-color:blue">
+					Loading..
+					</div>
+					<div id="text">
+						<!-- content generated with JS -->  
+					</div>
+				  </div>
 		</div>
 		<script>
 				// ModalOptions
@@ -214,6 +152,67 @@
 						modal.style.display = "none";
 					}
 				}
+				function constructScore(){
+				// type anything here
+					const text = 'score: ' + score;
+
+				// this function turns a string into an array
+				const createLetterArray = (string) => {
+				return string.split('');
+				}
+
+				// this function creates letter layers wrapped in span tags
+				const createLetterLayers = (array) => {
+				return array.map((letter) => {
+				let layer = '';
+				//specify # of layers per letter
+				for (let i = 1; i <= 2; i++) {
+					// if letter is a space
+					if(letter == ' '){
+					layer += '<span class="space"></span>';
+					}else{
+					layer += '<span class="letter-'+i+'">'+letter+'</span>';
+					}
+				}
+				return layer;
+				});
+				}
+
+				// this function wraps each letter in a parent container
+				const createLetterContainers = (array) => {
+				return array.map((item) => {
+					let container = '';
+					container += '<div class="wrapper">'+item+'</div>';
+					return container;
+				});
+				}
+
+				// use a promise to output text layers into DOM first
+				const outputLayers = new Promise(function(resolve, reject) {
+					document.getElementById('text').innerHTML = createLetterContainers(createLetterLayers(createLetterArray(text))).join('');
+					resolve();
+				});
+
+				// then adjust width and height of each letter
+				const spans = Array.prototype.slice.call(document.getElementsByTagName('span'));
+				outputLayers.then(() => {
+					return spans.map((span) => {
+					setTimeout(() => {
+						span.parentElement.style.width = span.offsetWidth+'px';
+						span.parentElement.style.height = span.offsetHeight+'px';
+					}, 200);
+					});  
+				}).then(() => {
+					// then slide letters into view one at a time
+					let time = 3800;
+					return spans.map((span) => {
+					time += 75;
+					setTimeout(() => {
+						span.parentElement.style.top = '0px';
+					}, time);
+					});
+				});
+			}
 			</script>
 </body>
 </html>

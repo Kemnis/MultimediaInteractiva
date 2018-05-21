@@ -1,74 +1,91 @@
 class Asteroid{
 
-    constructor(mesh) {
+    constructor(mesh, name, scene) {
+        this.name = name;
         this.mesh = mesh;
-        this.position = mesh.position;
-        this.rotation = mesh.rotation;
-        this.scale = mesh.scale;      
+        this.ConMain = scene;
+        this.mesh.position.y = -30;
+        this.MaxVel = 4;
         this.vel = new THREE.Vector3();
         this.acel = new THREE.Vector3();
-        this.IX = THREE.Math.randFloat(-.1,.1);
-        this.IZ = THREE.Math.randFloat(-.1,.1);
+        this.dir = new THREE.Vector3();
         this.initialRotation = THREE.Math.randFloat(-.1,.1);
         this.direction = THREE.Math.randInt(0,2);
-        this.start();
+        this.MaxDist = 40;
+        this.SecureRad = 10;
+        this.startGame = false;
+        this.redef = false;
     }
 
     start(){
-        this.scale.set(THREE.Math.randFloat(.2,.8),THREE.Math.randFloat(.2,.6),THREE.Math.randFloat(.2,.4));
-        this.position.set(THREE.Math.randInt(-30,30),0,THREE.Math.randInt(-30,30));
-        this.rotation.set(90,0,0);
+        if(this.redef == false)
+        {
+            this.mesh.scale.set(THREE.Math.randFloat(.2,.8),THREE.Math.randFloat(.2,.6),THREE.Math.randFloat(.2,.4));
+            let X=THREE.Math.randInt(-this.MaxDist,this.MaxDist);
+            let Z=THREE.Math.randInt(-this.MaxDist,this.MaxDist);
+            while(X >= -this.SecureRad && X <=this.SecureRad)
+            {
+                X=THREE.Math.randInt(-this.MaxDist,this.MaxDist);
+                // console.log("X:" + X); 
+            }
+            while(Z >= -this.SecureRad && Z <=this.SecureRad)
+            {
+                Z=THREE.Math.randInt(-this.MaxDist,this.MaxDist);
+            }
+            if (X > 130 || Z >130)
+            this.MaxVel = 10;
+            else if (X > 95 || Z >95)
+            this.MaxVel = 8;
+            else if(X > 60 || Z >60)
+            this.MaxVel = 4;
+            
+            this.mesh.position.set(X,0,Z);
+            this.mesh.rotation.set(90,0,0);
+            this.dir.x=-this.mesh.position.x - THREE.Math.randInt(0,15);
+            this.dir.y=0;
+            this.dir.z=-this.mesh.position.z- THREE.Math.randInt(0,15);
+            this.dir.normalize();
+            this.startGame = true;
+            this.redef = true;
+        }
     }
 
     applyForce(force) {
         this.acel.add(force);
     }
 
-    applyImpulse(force) {
-        this.vel.add(force);
-    }
-
-    acelerate()
-    {
-        this.isAcelerating = true;
-    }
-
+    // applyImpulse(force) {
+    //     this.vel.add(force);
+    // }
     Go()
     {
         if (this.direction == 0)
-            this.rotation.x+=this.initialRotation;
+            this.mesh.rotation.x+=this.initialRotation;
         else if (this.direction == 1)
-            this.rotation.y+=this.initialRotation;
+            this.mesh.rotation.y+=this.initialRotation;
         else if (this.direction == 2)
-            this.rotation.z+=this.initialRotation;
+            this.mesh.rotation.z+=this.initialRotation;
     }
 
     update(dt){
-        // if(!this.isAcelerating) {
-        //     if(this.vel.lengthSq() > 1){
-        //         let friction = this.vel.clone();
-        //         friction.multiplyScalar(-1);
-        //         friction.normalize();
-        //         friction.multiplyScalar(5);
-        //         this.applyForce(friction);
-        //     }
-        //     else {
-        //         this.vel.set(0, 0, 0);
-        //     }
-        // }
-        this.Go();
-        this.applyImpulse(new THREE.Vector3(this.IX, 0, this.IZ));
-        
-        this.acelerate();
-        this.vel.addScaledVector(this.acel, dt);
-        this.vel.clampLength(0, .8);                
-        this.position.addScaledVector(this.vel, dt);
-        this.acel.set(0, 0, 0);
+        if(this.startGame == true){
+            this.start();
+            this.Go();
+            this.applyForce(this.dir);
+            this.vel.addScaledVector(this.acel, dt);
+            this.vel.clampLength(0, this.MaxVel);                
+            this.mesh.position.addScaledVector(this.vel, dt);
+            this.acel.set(0, 0, 0);
+            if(this.mesh.position.x >= this.MaxDist || this.mesh.position.x <= -this.MaxDist)
+            this.removeEntity();
+            if(this.mesh.position.z >= this.MaxDist || this.mesh.position.z <= -this.MaxDist)
+            this.removeEntity();
+        }
+    }
 
-        // if(this.vel.lengthSq() > 1) {
-        //     let faceDirection = this.vel.clone().normalize();
-        //     let axis = new THREE.Vector3(1, 0, 0);
-        //     this.mesh.quaternion.setFromUnitVectors(axis, faceDirection.clone().normalize());
-        // }
+    removeEntity() {
+        this.ConMain.remove( this.mesh );
+        delete this;
+        //animate();
     }
 }

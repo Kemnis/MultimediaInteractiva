@@ -7,7 +7,6 @@ class Game{
         this.enemys = [];
         this.asteroids = [];
         this.playerControllers = [];
-        this.planet = new THREE.Mesh;
         this.keyboard = new Keyboard();
         this.defaultController = new InputMapping(this.keyboard);
         this.ListObjs = new THREE.Object3D();
@@ -16,93 +15,54 @@ class Game{
         this.camera = new THREE.PerspectiveCamera(75, this.visibleSize.width / this.visibleSize.height, 0.1, 600);
         this.clock = new THREE.Clock();	
         this.scene = new THREE.Scene();
-        this.MaxAsteroids = THREE.Math.randInt(1,1);
+        this.environment = new Background(this.scene);
+        this.MaxAsteroids = THREE.Math.randInt(7,25);
         this.camerangle = 1;
         this.paused = false;
+
+        this.time = 0;
+        this.startGame = false;
+        this.score = 0;
     }
 
     sceneStart(){
-        if (THREE.Math.randInt(0,2) == 0)
-        {
-            this.loadOBJWithMTL("assets/", "background.obj", "background1.mtl", (back) => {
-                this.SetObjectPos(back,0,-95,0);
-                this.SetObjectRot(back,0,180,0);
-                this.SetObjectEsc(back,380,380,380);
-                this.scene.add(back);
-            });
-        }
-        else
-        {
-            this.loadOBJWithMTL("assets/", "background.obj", "background2.mtl", (back) => {
-                this.SetObjectPos(back,0,-95,0);
-                this.SetObjectRot(back,0,180,0);
-                this.SetObjectEsc(back,380,380,380);
-                this.scene.add(back);
-            });
-        }
-        this.loadOBJWithMTL("assets/", "planet1.obj", "planet1.mtl", (planet1) => {
-			this.SetObjectPos(planet1,0,-95,0);
-			this.SetObjectRot(planet1,90,0,0);
-            this.SetObjectEsc(planet1,18,18,18);
-            this.planet = planet1;
-			//this.scene.add(this.planet);
-		});
+        //this.enemys.push(new Enemy(this.scene));
+        //this.enemys.push(new Enemy(this.scene));
 
-		this.loadOBJWithMTL("assets/", "enemy.obj", "enemy.mtl", (object) => {
-			let enemy = new Enemy(object);
-            this.enemys.push(enemy);
-            this.scene.add(object);
-        });
+        this.players.push(new Player(0, this.scene));
+        this.players.push(new Player(1, this.scene));
         
-        this.loadOBJWithMTL("assets/", "enemy.obj", "enemy2.mtl", (object) => {
-			let enemy = new Enemy(object);
-            this.enemys.push(enemy);
-            this.scene.add(object);
-		});
-
-        this.loadOBJWithMTL("assets/", "player.obj", "player.mtl", (object) => {
-            this.players.push(new Player(0, object, this.scene));
-            this.scene.add(this.players[0].groupVision);
-            this.scene.add(object);
-        });
-        
-        this.loadOBJWithMTL("assets/", "player.obj", "player2.mtl", (object) => {
-            let player = new Player(1, object, this.scene);
-            player.position.set(0, 0, 0);
-            this.players.push(player);
-            this.scene.add(object);
-        });
-
         for (let total = 0 ; total < this.MaxAsteroids; total++) {
             let texture = THREE.Math.randInt(0,4);
             if (texture == 0)
             {
                 this.loadOBJWithMTL("assets/", "planet1.obj", "asteroid1.mtl", (object) => {
-                    this.asteroids.push(new Asteroid(object));
+                    this.asteroids.push(new Asteroid(object,"Asteroid " + total, this.scene));
                     this.scene.add(object);
                 });
             }
             else if (texture == 1){
                 this.loadOBJWithMTL("assets/", "planet1.obj", "asteroid2.mtl", (object) => {
-                    this.asteroids.push(new Asteroid(object));
+                    this.asteroids.push(new Asteroid(object,"Asteroid " + total, this.scene));
                     this.scene.add(object);
                 });
             }
             else if (texture == 2){
                 this.loadOBJWithMTL("assets/", "planet1.obj", "asteroid3.mtl", (object) => {
-                    this.asteroids.push(new Asteroid(object));
+                    this.asteroids.push(new Asteroid(object,"Asteroid " + total, this.scene));
                     this.scene.add(object);
                 });
             }
             else if (texture == 3){
                 this.loadOBJWithMTL("assets/", "planet1.obj", "asteroid4.mtl", (object) => {
-                    this.asteroids.push(new Asteroid(object));
+                    this.asteroids.push(new Asteroid(object,"Asteroid " + total, this.scene));
                     this.scene.add(object);
                 });
             }
         }
 
         this.playerControllers.push( new InputMapping(this.keyboard, {
+            'Spawn': '8',
             'Left': 'A',
             'Right': 'D',
             'Up': 'W',
@@ -111,6 +71,7 @@ class Game{
         }));
 
         this.playerControllers.push(new InputMapping(this.keyboard, {
+            'Spawn': '9',
             'Left': 'left',
             'Right': 'right',
             'Up': 'up',
@@ -122,8 +83,9 @@ class Game{
     input(dt){
         for (let player of this.players) {
             let controller = this.playerControllers[player.playerId] || this.defaultController;
-            player.input(controller);
+            this.score += player.input(controller);
         }
+        //Paussed key
         if(this.keyboard.pressed('esc')){
             if(!this.paused)
                 this.pause();
@@ -134,69 +96,89 @@ class Game{
 
         let yaw = 0;
         let forward = 0;
+        //Camera Move Forward
         if (this.keyboard.pressed('I')){
             forward = -50;
             this.camera.translateZ(forward * dt);
         }
+        //Camera Move Backward
         else if (this.keyboard.pressed('K')) {
             forward = 50;
             this.camera.translateZ(forward * dt);
         }
+        //Camera Move Left
         if (this.keyboard.pressed("J")) {
 			yaw = -50;
             this.camera.translateX(yaw * dt);
-		} else if (this.keyboard.pressed("L")) {
+        } 
+        //Camera Move Right
+        else if (this.keyboard.pressed("L")) {
 			yaw = 50;
             this.camera.translateX(yaw * dt);
         }
+        //Camera Turn Left
         if (this.keyboard.pressed("V")) {
             this.camera.rotateY(THREE.Math.degToRad(this.camerangle));
-		} else if (this.keyboard.pressed("N")) {
+        } 
+        //Camera Turn Right
+        else if (this.keyboard.pressed("N")) {
             this.camera.rotateY(THREE.Math.degToRad(-this.camerangle));
         }
+        //Camera Turn up
         if (this.keyboard.pressed("G")) {
             this.camera.rotateX(THREE.Math.degToRad(this.camerangle));
-		} else if (this.keyboard.pressed("B")) {
+        } 
+        //Camera Turn Down
+        else if (this.keyboard.pressed("B")) {
             this.camera.rotateX(THREE.Math.degToRad(-this.camerangle));
 		}
-
-
-        //self.camera.rotation.y += yaw * dt;
-        
     }
     
     update(dt){
+        this.environment.update(dt, this.startGame);
+        if(this.asteroids.length == 0)
+        {
+        let fuera=0;
+        }
         for(let player of this.players){
             player.update(dt);
+            if(player.playerId == 0)
+            player.startGame = startGame;
         }
         for(let asteroid of this.asteroids){
-            asteroid.update(dt);
+            asteroid.update(dt, this.startGame);
+            asteroid.startGame = startGame;
         }
-        for(let enemy of this.enemys){
-            enemy.update(dt);
-        }
-        //this.planet.rotation.y += this.players[].angle;
+        // for(let enemy of this.enemys){
+        //     enemy.update(dt);
+        // }
     }
 
     render(){
         this.renderer.render(this.scene, this.camera);
     }
 
-    // pause(){
-    //     if(!this.paused){
-    //         this.paused = !this.paused;
-    //         this.clock.stop();
-    //         this.onGamePaused();
-    //     }
-    // }
+    pause(){
+        if(!this.paused){
+            this.paused = !this.paused;
+            this.clock.stop();
+            this.onGamePaused();
+        }
+    }
 
-    // unpause(){
-    //     if(this.paused){
-    //         this.paused = !this.paused;
-    //         this.clock.start();
-    //         this.onGameUnpaused();
-    //     }
-    // }
+    unpause(){
+        if(this.paused){
+            this.paused = !this.paused;
+            this.clock.start();
+            this.onGameUnpaused();
+        }
+    }
+
+    getVars(timeleft,startGame)
+    {
+        this.time = timeleft;
+        this.startGame = startGame;
+    }
 
     _Loop(){
         this.clock.start();
@@ -211,14 +193,6 @@ class Game{
         }
         requestAnimationFrame(_Loop_);
     }
-
-    /*onKeyDown(event){
-		keys[String.fromCharCode(event.keyCode)] = true;
-    }
-    
-	onKeyUp(event){
-		keys[String.fromCharCode(event.keyCode)] = false;
-	}*/
 
     _setupScene(){
         this.camera.position.z = 2;
@@ -239,24 +213,6 @@ class Game{
         //let grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
         //grid.position.y = -1;
         //this.scene.add(grid);
-    }
-    
-    SetObjectPos(object,PosX,PosY,PosZ){
-        object.position.x = PosX;
-        object.position.y = PosY;
-        object.position.z = PosZ;
-    }
-
-	SetObjectRot(object,RotX,RotY,RotZ){
-		object.rotation.x = THREE.Math.degToRad(RotX);
-		object.rotation.y = THREE.Math.degToRad(RotY);
-		object.rotation.z = THREE.Math.degToRad(RotZ);
-    }
-    
-	SetObjectEsc(object,EscX,EscY,EscZ){
-		object.scale.x = EscX;
-		object.scale.y = EscY;
-		object.scale.z = EscZ;
     }
 
     loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback){
