@@ -71,34 +71,12 @@
                 <button type="button" onclick="window.location.href = 'Controls.html'">Configurar controles</button>
         </div>
         <div class="mainGrid" id="musicPanel">
-            <audio id="audioplayer" loop autoplay ><!-- autoplay-->
+            <audio id="audioplayer" loop ><!-- autoplay-->
                 <source src="Resources/mainmenu.mp3" type="audio/mpeg"/>
             </audio>
         </div>
         <div class="mainGrid mainScreen">
-            <div id="Start" class="modal mainScreen">
-                <form class="modal-content animate" action="/action_page.php">
-                <div class="imgcontainer">
-                    <span class="close" onclick="document.getElementById('Start').style.display='none'" title="Close Modal">&times;</span>
-                    <img src="Resources/test.jpg" alt="Avatar" class="avatar">
-                </div>
-            
-                <div class="container">
-                    <label for="uname"><b>Nombre o Apodo</b></label>
-                    <input type="text" placeholder="Jose, Roy, Sebas, etc..." name="uname" required>
-        
-                    <!-- <button type="submit">Jugar</button> -->
-                    <label>
-                        <input type="checkbox" checked="checked" name="remember"> Recordar
-                    </label>
-                </div>
-        
-                <div class="container playNow" >
-                    <button type="button" onclick="window.location.href = 'game.html'">¡Jugar ahora!</button>
-                </div>
-                </form>
-            </div>
-            
+
             <div id="description" class="mainScreen">
                 <dl>
                     <dt>Taurus Pilot</dt>
@@ -114,7 +92,7 @@
                     </dd>             
                     <!-- other terms and definitions -->
                 </dl>
-                <button id="playButton" onclick="document.getElementById('Start').style.display='block'">Empezar a jugar</button>
+                <button id="playButton" onclick="window.location.href = 'game.html'">Empezar a jugar</button>
             </div>
         </div>
         <div class="mainGrid" id="bottomBanner">

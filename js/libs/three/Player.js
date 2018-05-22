@@ -2,6 +2,10 @@ class Player{
 
     constructor(playerId, scene) {
         this.mesh = new THREE.Mesh();
+        this.hit = new THREE.Mesh(this.hitgeometry,this.hitmaterial);
+        this.hitgeometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+        this.hitmaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, transparent: true, opacity: 0.5});
+
         this.playerId = playerId;
         this.vel = new THREE.Vector3();
         this.acel = new THREE.Vector3();
@@ -20,10 +24,11 @@ class Player{
         this.mesh.scale.set(.5,.5,.5);
         if (this.added == false && this.ready == true)
         {
+        this.ConMain.add(this.hit);
         this.ConMain.add(this.mesh);
+        this.hit.position.set(this.mesh.position.x,this.mesh.position.y,this.mesh.position.z);
         this.added = true;
         }
-        
     }
 
     input(controller){
@@ -84,12 +89,16 @@ class Player{
             this.mesh.position.addScaledVector(this.vel, dt);
             this.acel.set(0, 0, 0);
 
+            this.hit.position.set(this.mesh.position.x,this.mesh.position.y,this.mesh.position.z);
             if(this.vel.lengthSq() > 1) {
                 let faceDirection = this.vel.clone().normalize();
                 let axis = new THREE.Vector3(1, 0, 0);
                 this.mesh.quaternion.setFromUnitVectors(axis, faceDirection.clone().normalize());
             }
-
+        }
+        if(this.startGame == true)
+        {
+            this.start();
         }
     }
     loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback){

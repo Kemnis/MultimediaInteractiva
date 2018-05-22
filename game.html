@@ -16,9 +16,8 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
 	<script type="text/javascript">
 	var Jugador = new Game(1);
-	var scoreold=0;
 	var score=0;
-	var timeleft = -5;
+	var timeleft = -1;
 	var startGame = false;
 	var downloadTimer = setInterval(function(){
 	changeProgress(-100 + ++timeleft)
@@ -29,17 +28,16 @@
 		Jugador.getVars(timeleft,startGame);
 		//playSound();
 	}
-		score = Jugador.score;
-		scoreold = score;
-        console.log("score:" + score);
+	if (timeleft == 100)
+	{
+		showScore();
+	}
+	score = Jugador.score;
+    console.log("score:" + score);
 	if(timeleft >= 100)
 		clearInterval(downloadTimer);
 	},1195);//1195
 	
-	if(scoreold != score)
-	{
-		constructScore();
-	}
 
 	var keys = {};
 
@@ -88,15 +86,42 @@
 	progress.style.backgroundPosition=percent+"%";
 	progress.style.backgroundColor=bgColor;
 	}
+
+	function showScore()
+	{
+		document.getElementById('Start').style.display='block';
+		var score = "Score:" + score; 
+		document.getElementById('output').innerHTML = score;
+	}
 	</script>
 </head>
 
 <body>
-
+		<div id="Start" class="modal">
+				<form class="modal-content animate" action="/action_page.php">
+				<div class="imgcontainer">
+					<span class="close" onclick="document.getElementById('Start').style.display='none'" title="Close Modal">&times;</span>
+					<img src="Resources/test.jpg" alt="Avatar" class="avatar">
+				</div>
+				<div class="container">
+						<label id="output"><b></b></label>
+						<br>
+						<br>
+						<label for="uname"><b>Nombre o Apodo</b></label>
+						<input type="text" placeholder="Jose, Roy, Sebas, etc..." name="uname" required>
+								
+					</div>
+			
+					<div class="container playNow" >
+						<button type="button" onclick="window.location.href = 'game.html'">¡enviar resultados!</button>
+					</div>
+					</form>
+				</div>
 	<div id="scene-section"/>
 	<audio id="audioplayer" ><!-- autoplay--><!--猫又Call-->
 		<source src="Resources/Call.mp3" type="audio/mpeg"/>
 	</audio>
+
 	<div id="OptionsModal" class="modalOption">
 			<div class="modalOptionContent">
 				<span class="closeOptions">&times;</span>
@@ -115,6 +140,7 @@
 			</div>
 		</div>
 		<div id="pauseButton">
+			<!-- <button id= "Gameover" onclick ="showScore()">Se Acabo el juego</button> -->
 				<button id="pause">Pausar</button>
 				<div class="progress">
 					<div id="progress" class="line stripesLoader" style="background-position:100%;
@@ -152,12 +178,13 @@
 						modal.style.display = "none";
 					}
 				}
-				function constructScore(){
+				
+			</script>
+			<script>
 				// type anything here
-					const text = 'score: ' + score;
-
-				// this function turns a string into an array
-				const createLetterArray = (string) => {
+				const text = 'score: ' + score;
+			// this function turns a string into an array
+			const createLetterArray = (string) => {
 				return string.split('');
 				}
 
@@ -200,7 +227,7 @@
 					setTimeout(() => {
 						span.parentElement.style.width = span.offsetWidth+'px';
 						span.parentElement.style.height = span.offsetHeight+'px';
-					}, 200);
+					}, 250);
 					});  
 				}).then(() => {
 					// then slide letters into view one at a time
@@ -212,7 +239,6 @@
 					}, time);
 					});
 				});
-			}
-			</script>
+				</script>
 </body>
 </html>
