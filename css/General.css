@@ -88,6 +88,13 @@ button {
 }
 
 
+/*Fb Panel*/
+.BannerFB{
+    grid-area:e;
+    float:right;
+    margin: 0 auto !important;
+}
+
 /* Exist in Version 1
 /* #aboutField {
     grid-area: b;

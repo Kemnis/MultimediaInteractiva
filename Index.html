@@ -7,6 +7,11 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/General.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
+    <meta property="og:url"           content="http://127.0.0.1:5500/index.html" />
+    <meta property="og:type"          content="website" />
+    <meta property="og:title"         content="Taurus Pilot" />
+    <meta property="og:description"   content="Arcade Game" />
+    <meta property="og:image"         content="http://127.0.0.1:5500/index.html" />
 </head>
 <body>
     <script>
@@ -61,7 +66,7 @@
 
 
     <div class="Background">
-        <video id="VPlayerListener" loop muted autoplay poster="img/test.jpg" class="Background-video">
+        <video id="VPlayerListener" loop muted autoplay class="Background-video">
         </video>
     </div>
     <div class="GridOrder">
@@ -79,6 +84,11 @@
                 <source src="Resources/mainmenu.mp3" type="audio/mpeg"/>
             </audio>
         </div>
+         <!-- Load Facebook SDK for JavaScript -->
+        <div class="BannerFB" id="fb-root">
+            <div class="fb-like" data-href="http://127.0.0.1:5500/index.html"  data-width="1000" data-layout="box_count" data-action="like" data-size="large" data-show-faces="true" data-share="true"></div>
+        </div>
+        
         <div class="mainScreen">
 
             <div id="description" class="mainScreen">
@@ -88,9 +98,9 @@
                         la cantidad de enemigos y asteroides destruidos.
                     </dd>
                     <br>
-                    <dd>Dentro del juego se podran encontrar power ups los cuales podran ayudarte
+                    <!-- <dd>Dentro del juego se podran encontrar power ups los cuales podran ayudarte
                         a combatir a los enemigos.
-                    </dd>
+                    </dd> -->
                     <br>
                     <dd>Es posible jugar con un compañero usando el teclado dividido.
                     </dd>             
@@ -104,6 +114,22 @@
         </div>
         
     </div>
+   
+
+    <!-- Your like button code -->
+    <!-- <div class="fb-like" 
+        data-href="http://127.0.0.1:5500/index.html" 
+        data-layout="standard" 
+        data-action="like" 
+        data-show-faces="true">
+    </div> -->
+    <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0&appId=208998669733611&autoLogAppEvents=1';
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
     <script>
             // ModalOptions
             var modal = document.getElementById('OptionsModal');

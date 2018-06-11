@@ -23,6 +23,8 @@ class Game{
         this.delimeterMat = new THREE.MeshLambertMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
         this.delimeter = new THREE.Mesh(this.delimeterGeo,this.delimeterMat);
 
+        this.Sun = new THREE.Object3D();
+
         this.time = 0;
         this.startGame = false;
         this.score = 0;
@@ -60,7 +62,13 @@ class Game{
                 });
             }
         }
-        //this.particles();
+        let directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 0.75, 0.75), .35);
+        directionalLight.position.set(15, -90, 0);
+        this.Sun.position.set(0,0,0);
+        this.Sun.rotation.set(45,0,-90);
+        this.Sun.add(directionalLight);
+        this.scene.add(this.Sun);
+
         this.delimeter.position.set(0,0,1.5);
         //this.scene.add(this.delimeter);
         this.playerControllers.push( new InputMapping(this.keyboard, {
@@ -138,6 +146,7 @@ class Game{
     
     update(dt){
         this.environment.update(dt, this.startGame);
+        this.Sun.rotation.y -= .001;
         if(this.asteroids.length == 0)
         {
         let fuera=0;
@@ -328,14 +337,6 @@ class Game{
 
         let ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
         this.scene.add(ambientLight);
-
-        let directionalLight = new THREE.DirectionalLight(new THREE.Color(0, .5, 1), 0.4);
-        directionalLight.position.set(0, 0, 1);
-        this.scene.add(directionalLight);
-
-        //let grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
-        //grid.position.y = -1;
-        //this.scene.add(grid);
     }
 
     loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback){
