@@ -2,9 +2,16 @@ class Player{
 
     constructor(playerId, scene) {
         this.mesh = new THREE.Mesh();
-        this.hit = new THREE.Mesh(this.hitgeometry,this.hitmaterial);
-        this.hitgeometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+        this.rad = 2.2;
+        this.hitgeometry = new THREE.SphereGeometry(this.rad, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
         this.hitmaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, transparent: true, opacity: 0.5});
+        this.hit = new THREE.Mesh(this.hitgeometry,this.hitmaterial);
+
+        this.FaceGeometry = new THREE.SphereGeometry(this.rad, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
+        this.FaceMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, transparent: true, opacity: 0.5});
+        this.Face = new THREE.Mesh(this.FaceGeometry,this.FaceMaterial);
+
+        this.ActiveBullets = [];
 
         this.playerId = playerId;
         this.vel = new THREE.Vector3();
@@ -24,7 +31,9 @@ class Player{
         this.mesh.scale.set(.5,.5,.5);
         if (this.added == false && this.ready == true)
         {
+        this.Face.position.set(this.mesh.position.x+4,this.mesh.position.y,this.mesh.position.z);
         this.ConMain.add(this.hit);
+        this.mesh.add(this.Face);
         this.ConMain.add(this.mesh);
         this.hit.position.set(this.mesh.position.x,this.mesh.position.y,this.mesh.position.z);
         this.added = true;
@@ -59,7 +68,7 @@ class Player{
         }
 
         if(controller.pressed('Shoot')){
-            return 10;
+            this.ActiveBullets.push(new Bullet(this.ConMain, this.mesh, this.Face, this.rad, 25));
         }
         return 0;
     }
@@ -94,6 +103,11 @@ class Player{
                 let faceDirection = this.vel.clone().normalize();
                 let axis = new THREE.Vector3(1, 0, 0);
                 this.mesh.quaternion.setFromUnitVectors(axis, faceDirection.clone().normalize());
+            }
+
+
+            for(let bullet of this.ActiveBullets){
+                bullet.update(dt);
             }
         }
         if(this.startGame == true)

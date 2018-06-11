@@ -13,14 +13,22 @@ class Asteroid{
         this.direction = THREE.Math.randInt(0,2);
         this.MaxDist = 40;
         this.SecureRad = 10;
+        this.randRad =THREE.Math.randFloat(.2,1);
+        this.realRad = this.randRad * 5
         this.startGame = false;
         this.redef = false;
+
+
+        this.hitgeometry = new THREE.SphereGeometry(this.realRad, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
+        this.hitmaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, transparent: true, opacity: 0.5});
+        this.hit = new THREE.Mesh(this.hitgeometry,this.hitmaterial);
+        this.IsDead = false;
     }
 
     start(){
         if(this.redef == false)
         {
-            this.mesh.scale.set(THREE.Math.randFloat(.2,.8),THREE.Math.randFloat(.2,.6),THREE.Math.randFloat(.2,.4));
+            this.mesh.scale.set(this.randRad,this.randRad,this.randRad);
             let X=THREE.Math.randInt(-this.MaxDist,this.MaxDist);
             let Z=THREE.Math.randInt(-this.MaxDist,this.MaxDist);
             while(X >= -this.SecureRad && X <=this.SecureRad)
@@ -41,10 +49,12 @@ class Asteroid{
             
             this.mesh.position.set(X,0,Z);
             this.mesh.rotation.set(90,0,0);
+            this.hit.position.set(this.mesh.position.x,this.mesh.position.y,this.mesh.position.z);
             this.dir.x=-this.mesh.position.x - THREE.Math.randInt(0,15);
             this.dir.y=0;
             this.dir.z=-this.mesh.position.z- THREE.Math.randInt(0,15);
             this.dir.normalize();
+            this.ConMain.add(this.hit);
             this.startGame = true;
             this.redef = true;
         }
@@ -80,11 +90,14 @@ class Asteroid{
             this.removeEntity();
             if(this.mesh.position.z >= this.MaxDist || this.mesh.position.z <= -this.MaxDist)
             this.removeEntity();
+            this.hit.position.set(this.mesh.position.x,this.mesh.position.y,this.mesh.position.z);            
         }
     }
 
     removeEntity() {
         this.ConMain.remove( this.mesh );
+        this.ConMain.remove( this.hit );
+        this.IsDead = true;
         delete this;
         //animate();
     }

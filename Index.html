@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Taurus Pilot</title>
-    <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/General.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
 </head>
@@ -20,14 +20,14 @@
             }
         }
         $(document).ready(function(){
-            var video = document.getElementById('videoplayer');
-            var videoList=["Resources/2.mp4","Resources/3.mp4","Resources/4.mp4","Resources/5.mp4"];
+            var video = document.getElementById('VPlayerListener');
+            var videoList=["Resources/1.mp4","Resources/2.mp4"];
             if(videoList)
             videoList.sort(function(a, b) {return 0.5 - Math.random()});
             var source = document.createElement('source');
             source.setAttribute('src', videoList[0]);
             video.appendChild(source);
-            // $("#videoplayer").html("<video id='rawvideo' loop muted autoplay poster='img/test.jpg' class='fullscreen-bg__video'><source src='" +  + "' type='video/mp4'></video>");
+            // $("#VPlayerListener").html("<video id='rawvideo' loop muted autoplay poster='img/test.jpg' class='fullscreen-bg__video'><source src='" +  + "' type='video/mp4'></video>");
         });
         
         function playSound() {
@@ -39,43 +39,47 @@
             }
         }
     </script>
+
+
     <div id="OptionsModal" class="modalOption">
         <div class="modalOptionContent">
             <span class="closeOptions">&times;</span>
-            <div class="wrapper2">
-                <h3 id="element1">Habilitar Musica</h3>
+            <div class="GridOrder2">
+                <h3 id="Grid2element1">Habilitar Musica</h3>
                 <label class="switch">  
                 <input type="checkbox" checked="True" onclick="playSound()">
-                <span  id="element3" class="slider round"></span>
+                <span  id="Grid2element3" class="slider round"></span>
                 </label>
-                <h3 id="element2">Habilitar Sonidos</h3>
+                <h3 id="Grid2element2">Habilitar Sonidos</h3>
                 <label class="switch">  
                 <input type="checkbox">
-                <span  id="element3" class="slider round"></span>
+                <span  id="Grid2element3" class="slider round"></span>
                 </label>
             </div>
         </div>
     </div>
-    <div class="fullscreen-bg">
-        <video id="videoplayer" loop muted autoplay poster="img/test.jpg" class="fullscreen-bg__video">
+
+
+    <div class="Background">
+        <video id="VPlayerListener" loop muted autoplay poster="img/test.jpg" class="Background-video">
         </video>
     </div>
-    <div class="wrapper">
-        <div class="mainGrid" id="logoImg">
+    <div class="GridOrder">
+        <div  id="logoImg">
             <img id="logoSource" src="Resources/Taurus Pilot.png" alt="Logo">
         </div>
-        <div class="mainGrid" id="mainButtonsField">
+        <div id="mainButtonsField">
             <button id="optionsButton">Opciones</button>
         </div>
-        <div class="mainGrid" id="mainButtonsField">
+        <div id="mainButtonsField">
                 <button type="button" onclick="window.location.href = 'Controls.html'">Configurar controles</button>
         </div>
-        <div class="mainGrid" id="musicPanel">
+        <div id="musicPanel">
             <audio id="audioplayer" loop ><!-- autoplay-->
                 <source src="Resources/mainmenu.mp3" type="audio/mpeg"/>
             </audio>
         </div>
-        <div class="mainGrid mainScreen">
+        <div class="mainScreen">
 
             <div id="description" class="mainScreen">
                 <dl>
@@ -95,7 +99,7 @@
                 <button id="playButton" onclick="window.location.href = 'game.html'">Empezar a jugar</button>
             </div>
         </div>
-        <div class="mainGrid" id="bottomBanner">
+        <div id="bottomBanner">
             <button id="Puntajes" type="button"onclick="window.location.href = 'Score.html'">Puntajes</button>
         </div>
         

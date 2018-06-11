@@ -9,7 +9,6 @@ class Game{
         this.playerControllers = [];
         this.keyboard = new Keyboard();
         this.defaultController = new InputMapping(this.keyboard);
-        this.ListObjs = new THREE.Object3D();
         this.renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
         this.visibleSize =  { width: window.innerWidth, height: window.innerHeight};
         this.camera = new THREE.PerspectiveCamera(75, this.visibleSize.width / this.visibleSize.height, 0.1, 600);
@@ -19,6 +18,10 @@ class Game{
         this.MaxAsteroids = THREE.Math.randInt(7,25);
         this.camerangle = 1;
         this.paused = false;
+        //Area de colision y limites para moverse de los usuarios
+        this.delimeterGeo = new THREE.SphereGeometry(29, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
+        this.delimeterMat = new THREE.MeshLambertMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
+        this.delimeter = new THREE.Mesh(this.delimeterGeo,this.delimeterMat);
 
         this.time = 0;
         this.startGame = false;
@@ -26,9 +29,6 @@ class Game{
     }
 
     sceneStart(){
-        //this.enemys.push(new Enemy(this.scene));
-        //this.enemys.push(new Enemy(this.scene));
-
         this.players.push(new Player(0, this.scene));
         this.players.push(new Player(1, this.scene));
         
@@ -60,7 +60,9 @@ class Game{
                 });
             }
         }
-
+        //this.particles();
+        this.delimeter.position.set(0,0,1.5);
+        //this.scene.add(this.delimeter);
         this.playerControllers.push( new InputMapping(this.keyboard, {
             'Spawn': '8',
             'Left': 'A',
@@ -148,10 +150,131 @@ class Game{
         for(let asteroid of this.asteroids){
             asteroid.update(dt, this.startGame);
             asteroid.startGame = startGame;
+            if(this.startGame == true && timeleft > 3 && asteroid.IsDead == false)
+            {
+                let distancia = Math.sqrt((asteroid.hit.position.x - this.players[0].hit.position.x)*(asteroid.hit.position.x - this.players[0].hit.position.x) 
+                + (asteroid.hit.position.y - this.players[0].hit.position.y) * (asteroid.hit.position.y - this.players[0].hit.position.y) + 
+                (asteroid.hit.position.z - this.players[0].hit.position.z) * (asteroid.hit.position.z - this.players[0].hit.position.z)); 
+                let Radios = asteroid.realRad + this.players[0].rad;
+                //console.log("distancia:" + distancia); 
+                //console.log("sumaRadios:" + Radios); 
+                if(distancia < Radios)
+                {
+                    if(timeleft < 95)
+                    timeleft +=5;
+                    else
+                    timeleft = 100;
+                    asteroid.removeEntity();
+                    asteroid.IsDead=true;
+                    this.particles(this.players[0].mesh.position, 0);
+                }
+            }
+            if(this.players.length > 0)
+            {
+                if(this.players[0].ActiveBullets.length >0)
+                {
+                    for (let Bullet of this.players[0].ActiveBullets)
+                    {
+                        if(this.startGame == true && timeleft > 3 && asteroid.IsDead == false && Bullet.alive == true)
+                        {
+                            let distancia = Math.sqrt((asteroid.hit.position.x - Bullet.mesh.position.x)*(asteroid.hit.position.x - Bullet.mesh.position.x) 
+                            + (asteroid.hit.position.y - Bullet.mesh.position.y) * (asteroid.hit.position.y - Bullet.mesh.position.y) + 
+                            (asteroid.hit.position.z - Bullet.mesh.position.z) * (asteroid.hit.position.z - Bullet.mesh.position.z)); 
+                            let Radios = asteroid.realRad + Bullet.rad;
+                            //console.log("distancia:" + distancia); 
+                            //console.log("sumaRadios:" + Radios); 
+                            if(distancia < Radios)
+                            {
+                                asteroid.removeEntity();
+                                asteroid.IsDead=true;
+                                Bullet.alive= false;
+                                Bullet.removeEntity();
+                                this.particles(asteroid.mesh.position, 1);
+                            }
+                        }
+                    }
+                }
+                if(this.players[1].ActiveBullets.length >0)
+                {
+                    for (let Bullet of this.players[1].ActiveBullets)
+                    {
+                        if(this.startGame == true && timeleft > 3 && asteroid.IsDead == false && Bullet.alive == true)
+                        {
+                            let distancia = Math.sqrt((asteroid.hit.position.x - Bullet.mesh.position.x)*(asteroid.hit.position.x - Bullet.mesh.position.x) 
+                            + (asteroid.hit.position.y - Bullet.mesh.position.y) * (asteroid.hit.position.y - Bullet.mesh.position.y) + 
+                            (asteroid.hit.position.z - Bullet.mesh.position.z) * (asteroid.hit.position.z - Bullet.mesh.position.z)); 
+                            let Radios = asteroid.realRad + Bullet.rad;
+                            //console.log("distancia:" + distancia); 
+                            //console.log("sumaRadios:" + Radios); 
+                            if(distancia < Radios)
+                            {
+                                asteroid.removeEntity();
+                                asteroid.IsDead=true;
+                                Bullet.alive= false;
+                                Bullet.removeEntity();
+                                this.particles(asteroid.mesh.position, 1);                                
+                            }
+                        }
+                    }
+                }
+            }
         }
+        TWEEN.update();
         // for(let enemy of this.enemys){
         //     enemy.update(dt);
         // }
+    }
+
+    generateSprite(target) {
+        let canvas = document.createElement( 'canvas' );
+        canvas.width = 16;
+        canvas.height = 16;
+        let context = canvas.getContext( '2d' );
+        let gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
+        gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
+        gradient.addColorStop( 0.2, 'rgba(0,255,255,1)' );
+        if(target == 0)
+            gradient.addColorStop( 0.4, 'rgba(0,64,0,1)' );
+        else
+            gradient.addColorStop( 0.4, 'rgba(96,6,0,1)' );
+        gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
+        context.fillStyle = gradient;
+        context.fillRect( 0, 0, canvas.width, canvas.height );
+        return canvas;
+    }
+
+    initParticle( part, delay, pos ) {
+        part = this instanceof THREE.Sprite ? this : part;
+        delay = delay !== undefined ? delay : 0;
+        part.position.set( pos.x, pos.y, pos.z );
+        part.scale.x = part.scale.y = Math.random() * 10 + 1;
+        new TWEEN.Tween( part )
+            .delay( delay )
+            .to( {}, 10000 )
+            .onComplete( this.initParticle )
+            .start();
+        new TWEEN.Tween( part.position )
+            .delay( delay )
+            .to( { x: Math.random() * 4000 - 2000, y: Math.random() * 1000 - 500, z: Math.random() * 4000 - 2000 }, 10000 )
+            .start();
+        new TWEEN.Tween( part.scale )
+            .delay( delay )
+            .to( { x: 0.01, y: 0.01 }, 10000 )
+            .start();
+    }
+
+    particles(Pos, target)
+    {
+        let particle;
+        let material = new THREE.SpriteMaterial( {
+            map: new THREE.CanvasTexture( this.generateSprite(target) ),
+            blending: THREE.AdditiveBlending
+        } );
+        for ( let i = 0; i < 30; i++ ) {
+            particle = new THREE.Sprite( material );
+            this.initParticle( particle, i * 5, Pos );
+            this.scene.add( particle );
+        }
     }
 
     render(){
