@@ -69,6 +69,7 @@ class Player{
 
         if(controller.pressed('Shoot')){
             this.ActiveBullets.push(new Bullet(this.ConMain, this.mesh, this.Face, this.rad, 25));
+            controller.pressed('Shoot', false);
         }
         return 0;
     }
