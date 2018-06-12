@@ -118,13 +118,36 @@
 				<br>
 				<br>
 				<label for="uname"><b>Nombre o Apodo</b></label>
-				<input type="text" placeholder="Jose, Roy, Sebas, etc..." name="uname" required>
+				<input id ="uname" type="text" placeholder="Jose, Roy, Sebas, etc..." name="uname" required>
 						
 			</div>
 	
 			<div class="container playNow" >
-				<button type="button" onclick="window.location.href = 'game.html'">¡enviar resultados!</button>
+				<button  onclick="Submit()">¡enviar resultados!</button>
 		</div>
+		<script>
+
+			
+			function Submit() {
+			var user = {
+				name: $('#uname').val(), 
+				score: score
+			}
+			$.ajax({
+				method: "POST",
+				url: "web_service.php",
+				data: {
+					action: "NewScore",
+					userJson: JSON.stringify(user), 
+					}
+				})
+				.done(function( msg ) {
+	
+					$('body').append(msg);
+	
+			});
+			}
+		</script>
 		</form>
 	</div>
 

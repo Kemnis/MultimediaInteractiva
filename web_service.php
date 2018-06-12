@@ -12,10 +12,10 @@ switch ($action){
 }
 
 function connect() {
-    $databasehost = "localhost";
-    $databasename = "tauruspilot";
-    $databaseuser = "root";
-    $databasepass = "";
+    $databasehost = "sql307.epizy.com";
+    $databasename = "epiz_22232663_TaurusPilot";
+    $databaseuser = "epiz_22232663";
+    $databasepass = "VSnivy";
 
     $mysqli = new mysqli($databasehost, $databaseuser, $databasepass, $databasename);
     if($mysqli->connect_errno){
@@ -68,17 +68,13 @@ function getScores()
 
     $mysqli = connect();
 
-    $query = "call login('".$username."', '".$password."')";
+    $query = "SELECT * from User";
     $result = $mysqli->query($query);
 
     if(!$result){
         echo "Problema al hacer un query: " . $mysqli->error;
     }else {
-        $rows = array();
-        while($r = $result->fetch_assoc()){
-            $rows[] = $r;
-        }
-        echo json_encode($rows[0]);
+        echo "Imprime Puntaje";
     }
     $result->free();
     disconnect($mysqli);
