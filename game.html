@@ -21,7 +21,7 @@
 	<script type="text/javascript">
 	var Jugador = new Game(1);
 	var score=0;
-	var timeleft = -1;
+	var timeleft = -3;
 	var startGame = false;
 
 	var dataUser = { "name" : "gama", "score":"100"};
@@ -33,17 +33,19 @@
 		startGame = true;
 		$("#progress").empty();
 		Jugador.getVars(timeleft,startGame);
-		//playSound();
+		playSound();
 	}
 	if (timeleft == 100)
 	{
 		showScore();
 	}
 	score = Jugador.score;
-    console.log("score:" + score);
+	console.log("score:" + score);
+	document.getElementById("progress").innerHTML= "Time Left:" + Math.round((((100*1) - (timeleft*1))/.83));
+	document.getElementById("ScorePlayer").innerHTML= "Score:" + score;
 	if(timeleft >= 100)
 		clearInterval(downloadTimer);
-	},1195);//1195
+	},1200);//1195
 	
 
 	var keys = {};
@@ -97,8 +99,7 @@
 	function showScore()
 	{
 		document.getElementById('Start').style.display='block';
-		var score = "Score:" + score; 
-		document.getElementById('output').innerHTML = score;
+		document.getElementById('text2').innerHTML = "Final Score" + Math.round(score);
 	}
 	</script>
 </head>
@@ -112,6 +113,8 @@
 		</div>
 		<div class="container">
 				<label id="output"><b></b></label>
+				<label id="text1"><b></b></label>
+				<label id="text2"><b></b></label>
 				<br>
 				<br>
 				<label for="uname"><b>Nombre o Apodo</b></label>
@@ -156,7 +159,7 @@
 			Loading..
 			</div>
 			<div id="text">
-				<!-- content generated with JS -->  
+				<p id="ScorePlayer"></p>
 			</div>
 		</div>
 	</div>
@@ -188,65 +191,6 @@
 			}
 			
 	</script>
-	<script>
-	// type anything here
-	const text = 'score: ' + score;
-	// this function turns a string into an array
-	const createLetterArray = (string) => {
-		return string.split('');
-		}
-
-		// this function creates letter layers wrapped in span tags
-		const createLetterLayers = (array) => {
-		return array.map((letter) => {
-		let layer = '';
-		//specify # of layers per letter
-		for (let i = 1; i <= 2; i++) {
-			// if letter is a space
-			if(letter == ' '){
-			layer += '<span class="space"></span>';
-			}else{
-			layer += '<span class="letter-'+i+'">'+letter+'</span>';
-			}
-		}
-		return layer;
-		});
-		}
-
-		// this function wraps each letter in a parent container
-		const createLetterContainers = (array) => {
-		return array.map((item) => {
-			let container = '';
-			container += '<div class="wrapper">'+item+'</div>';
-			return container;
-		});
-		}
-
-		// use a promise to output text layers into DOM first
-		const outputLayers = new Promise(function(resolve, reject) {
-			document.getElementById('text').innerHTML = createLetterContainers(createLetterLayers(createLetterArray(text))).join('');
-			resolve();
-		});
-
-		// then adjust width and height of each letter
-		const spans = Array.prototype.slice.call(document.getElementsByTagName('span'));
-		outputLayers.then(() => {
-			return spans.map((span) => {
-			setTimeout(() => {
-				span.parentElement.style.width = span.offsetWidth+'px';
-				span.parentElement.style.height = span.offsetHeight+'px';
-			}, 250);
-			});  
-		}).then(() => {
-			// then slide letters into view one at a time
-			let time = 3800;
-			return spans.map((span) => {
-			time += 75;
-			setTimeout(() => {
-				span.parentElement.style.top = '0px';
-			}, time);
-			});
-		});
-	</script>
+	
 </body>
 </html>

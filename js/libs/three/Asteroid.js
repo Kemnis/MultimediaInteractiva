@@ -5,15 +5,15 @@ class Asteroid{
         this.mesh = mesh;
         this.ConMain = scene;
         this.mesh.position.y = -30;
-        this.MaxVel = 4;
+        this.MaxVel = 10;
         this.vel = new THREE.Vector3();
         this.acel = new THREE.Vector3();
         this.dir = new THREE.Vector3();
         this.initialRotation = THREE.Math.randFloat(-.1,.1);
         this.direction = THREE.Math.randInt(0,2);
-        this.MaxDist = 40;
-        this.SecureRad = 10;
-        this.randRad =THREE.Math.randFloat(.2,1);
+        //this.MaxDist = 40;
+        //this.SecureRad = 10;
+        this.randRad =THREE.Math.randFloat(.2,.5);
         this.realRad = this.randRad * 5
         this.startGame = false;
         this.redef = false;
@@ -23,12 +23,33 @@ class Asteroid{
         this.hitmaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, transparent: true, opacity: 0.5});
         this.hit = new THREE.Mesh(this.hitgeometry,this.hitmaterial);
         this.IsDead = false;
+
+
+    }
+
+    randomPosition (minRad, maxRad) {
+        let validPosition = false;
+        let randX = 0;
+        let randZ = 0;
+        let result = new THREE.Vector3();
+        while(!validPosition){
+            randX = THREE.Math.randInt(-maxRad, maxRad);
+            randZ = THREE.Math.randInt(-maxRad, maxRad);
+            result.set(randX, 0, randZ);
+            let lengthSq = result.lengthSq(); 
+            if( lengthSq > (minRad * minRad)){
+                    validPosition = true;
+            }
+        }
+        return result;
     }
 
     start(){
         if(this.redef == false)
         {
+            let startPosition = this.randomPosition(29, 55);
             this.mesh.scale.set(this.randRad,this.randRad,this.randRad);
+            /*
             let X=THREE.Math.randInt(-this.MaxDist,this.MaxDist);
             let Z=THREE.Math.randInt(-this.MaxDist,this.MaxDist);
             while(X >= -this.SecureRad && X <=this.SecureRad)
@@ -46,15 +67,17 @@ class Asteroid{
             this.MaxVel = 8;
             else if(X > 60 || Z >60)
             this.MaxVel = 4;
+            */    
             
-            this.mesh.position.set(X,0,Z);
+            //this.mesh.position.set(X,0,Z);
+            this.mesh.position.copy(startPosition);
             this.mesh.rotation.set(90,0,0);
-            this.hit.position.set(this.mesh.position.x,this.mesh.position.y,this.mesh.position.z);
-            this.dir.x=-this.mesh.position.x - THREE.Math.randInt(0,15);
-            this.dir.y=0;
-            this.dir.z=-this.mesh.position.z- THREE.Math.randInt(0,15);
+            this.hit.position.copy(this.mesh.position);
+            let target = this.randomPosition(0, 29);
+            this.dir.copy(target);
+            this.dir.sub(this.mesh.position);
             this.dir.normalize();
-            this.ConMain.add(this.hit);
+            //this.ConMain.add(this.hit);
             this.startGame = true;
             this.redef = true;
         }
@@ -86,19 +109,30 @@ class Asteroid{
             this.vel.clampLength(0, this.MaxVel);                
             this.mesh.position.addScaledVector(this.vel, dt);
             this.acel.set(0, 0, 0);
-            if(this.mesh.position.x >= this.MaxDist || this.mesh.position.x <= -this.MaxDist)
-            this.removeEntity();
-            if(this.mesh.position.z >= this.MaxDist || this.mesh.position.z <= -this.MaxDist)
-            this.removeEntity();
-            this.hit.position.set(this.mesh.position.x,this.mesh.position.y,this.mesh.position.z);            
+
+            let distanceSq = this.mesh.position.distanceToSquared(new THREE.Vector3());
+
+            if(distanceSq > (55 * 55)) {
+                this.removeEntity();
+            }
+
+            this.hit.position.copy(this.mesh.position);            
         }
     }
 
     removeEntity() {
-        this.ConMain.remove( this.mesh );
-        this.ConMain.remove( this.hit );
-        this.IsDead = true;
-        delete this;
+        this.mesh.position.copy(this.randomPosition(29, 55));
+        this.vel.set(0, 0, 0);
+
+        let target = this.randomPosition(0, 29);
+        this.dir.copy(target);
+        this.dir.sub(this.mesh.position);
+        this.dir.normalize();
+
+        //this.ConMain.remove( this.mesh );
+        //this.ConMain.remove( this.hit );
+        //this.IsDead = true;
+        //delete this;
         //animate();
     }
 }

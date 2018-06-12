@@ -7,11 +7,12 @@ class Player{
         this.hitmaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, transparent: true, opacity: 0.5});
         this.hit = new THREE.Mesh(this.hitgeometry,this.hitmaterial);
 
-        this.FaceGeometry = new THREE.SphereGeometry(this.rad, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
+        this.FaceGeometry = new THREE.SphereGeometry(.01, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
         this.FaceMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, transparent: true, opacity: 0.5});
         this.Face = new THREE.Mesh(this.FaceGeometry,this.FaceMaterial);
 
         this.ActiveBullets = [];
+        this.alive = false;
 
         this.playerId = playerId;
         this.vel = new THREE.Vector3();
@@ -32,7 +33,7 @@ class Player{
         if (this.added == false && this.ready == true)
         {
         this.Face.position.set(this.mesh.position.x+4,this.mesh.position.y,this.mesh.position.z);
-        this.ConMain.add(this.hit);
+        //this.ConMain.add(this.hit);
         this.mesh.add(this.Face);
         this.ConMain.add(this.mesh);
         this.hit.position.set(this.mesh.position.x,this.mesh.position.y,this.mesh.position.z);
@@ -44,7 +45,11 @@ class Player{
         let force = 50;
         this.isAcelerating = false;
         if(controller.pressed('Spawn')){
-            this.start();
+            if(this.alive == false)
+            {
+                this.start();
+                this.alive = true;
+            }
         }
 
         if(controller.pressed('Left')){
@@ -68,7 +73,7 @@ class Player{
         }
 
         if(controller.pressed('Shoot')){
-            this.ActiveBullets.push(new Bullet(this.ConMain, this.mesh, this.Face, this.rad, 25));
+            this.ActiveBullets.push(new Bullet(this.ConMain, this.mesh, this.Face, 1, 25));
             controller.pressed('Shoot', false);
         }
         return 0;

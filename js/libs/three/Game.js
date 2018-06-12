@@ -15,16 +15,22 @@ class Game{
         this.clock = new THREE.Clock();	
         this.scene = new THREE.Scene();
         this.environment = new Background(this.scene);
-        this.MaxAsteroids = THREE.Math.randInt(7,25);
+        this.MaxAsteroids = THREE.Math.randInt(20,30);
         this.camerangle = 1;
         this.paused = false;
         //Area de colision y limites para moverse de los usuarios
-        this.delimeterGeo = new THREE.SphereGeometry(29, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
+        this.delimeterRad = 29;
+        this.delimeterGeo = new THREE.SphereGeometry(this.delimeterRad, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
         this.delimeterMat = new THREE.MeshLambertMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
         this.delimeter = new THREE.Mesh(this.delimeterGeo,this.delimeterMat);
 
-        this.Sun = new THREE.Object3D();
+        this.delimeterEnemyRad = 55;
+        this.delimeterEnemyGeo = new THREE.SphereGeometry(this.delimeterEnemyRad, 40, 40, 0, Math.PI * 2, 0, Math.PI * 2);
+        this.delimeterEnemyMat = new THREE.MeshLambertMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
+        this.delimeterEnemy = new THREE.Mesh(this.delimeterEnemyGeo,this.delimeterEnemyMat);
 
+        this.Sun = new THREE.Object3D();
+        this.penalization = 7;
         this.time = 0;
         this.startGame = false;
         this.score = 0;
@@ -68,16 +74,20 @@ class Game{
         this.Sun.rotation.set(45,0,-90);
         this.Sun.add(directionalLight);
         this.scene.add(this.Sun);
+        this.environment.start();
+
 
         this.delimeter.position.set(0,0,1.5);
         //this.scene.add(this.delimeter);
+        this.delimeterEnemy.position.set(0,0,1.5);
+        //this.scene.add(this.delimeterEnemy);
         this.playerControllers.push( new InputMapping(this.keyboard, {
             'Spawn': '8',
             'Left': 'A',
             'Right': 'D',
             'Up': 'W',
             'Down': 'S',
-            'Shoot': '2'
+            'Shoot': 'Space'
         }));
 
         this.playerControllers.push(new InputMapping(this.keyboard, {
@@ -88,6 +98,7 @@ class Game{
             'Down': 'down',
             'Shoot': '0'
         }));
+
     }
 
     input(dt){
@@ -147,6 +158,8 @@ class Game{
     update(dt){
         this.environment.update(dt, this.startGame);
         this.Sun.rotation.y -= .001;
+        if(timeleft>=100)
+        timeleft=99;
         if(this.asteroids.length == 0)
         {
         let fuera=0;
@@ -154,12 +167,25 @@ class Game{
         for(let player of this.players){
             player.update(dt);
             if(player.playerId == 0)
-            player.startGame = startGame;
+            {
+                player.startGame = startGame;
+                player.alive = true;
+            }
+            let CenterDist = Math.sqrt((this.delimeter.position.x - player.mesh.position.x)*(this.delimeter.position.x - player.mesh.position.x) 
+            + (this.delimeter.position.y - player.mesh.position.y) * (this.delimeter.position.y - player.mesh.position.y) + 
+            (this.delimeter.position.z - player.mesh.position.z) * (this.delimeter.position.z - player.mesh.position.z));
+            let RadsPWorld =this.delimeterRad + player.rad;
+            if(CenterDist > RadsPWorld)
+            {
+                let f = this.delimeter.position.clone();
+                f.sub(player.mesh.position);
+                //let f = this.delimeter.position.subVectors(player.mesh.position);
+                let difference = CenterDist - RadsPWorld;
+                player.applyForce(f.multiplyScalar(8));
+            } 
         }
         for(let asteroid of this.asteroids){
-            asteroid.update(dt, this.startGame);
-            asteroid.startGame = startGame;
-            if(this.startGame == true && timeleft > 3 && asteroid.IsDead == false)
+            if(this.startGame == true && timeleft > 1 && asteroid.IsDead == false)
             {
                 let distancia = Math.sqrt((asteroid.hit.position.x - this.players[0].hit.position.x)*(asteroid.hit.position.x - this.players[0].hit.position.x) 
                 + (asteroid.hit.position.y - this.players[0].hit.position.y) * (asteroid.hit.position.y - this.players[0].hit.position.y) + 
@@ -170,12 +196,28 @@ class Game{
                 if(distancia < Radios)
                 {
                     if(timeleft < 95)
-                    timeleft +=5;
+                    timeleft +=this.penalization;
                     else
                     timeleft = 100;
                     asteroid.removeEntity();
-                    asteroid.IsDead=true;
+                    //asteroid.IsDead=true;
                     this.particles(this.players[0].mesh.position, 0);
+                }
+                let distancia2 = Math.sqrt((asteroid.hit.position.x - this.players[1].hit.position.x)*(asteroid.hit.position.x - this.players[1].hit.position.x) 
+                + (asteroid.hit.position.y - this.players[1].hit.position.y) * (asteroid.hit.position.y - this.players[1].hit.position.y) + 
+                (asteroid.hit.position.z - this.players[1].hit.position.z) * (asteroid.hit.position.z - this.players[1].hit.position.z)); 
+                let Radios2 = asteroid.realRad + this.players[1].rad;
+                //console.log("distancia:" + distancia); 
+                //console.log("sumaRadios:" + Radios); 
+                if(distancia2 < Radios2 && this.players[1].alive == true)
+                {
+                    if(timeleft < 95)
+                    timeleft +=this.penalization;
+                    else
+                    timeleft = 100;
+                    asteroid.removeEntity();
+                    //asteroid.IsDead=true;
+                    this.particles(this.players[1].mesh.position, 0);
                 }
             }
             if(this.players.length > 0)
@@ -184,7 +226,7 @@ class Game{
                 {
                     for (let Bullet of this.players[0].ActiveBullets)
                     {
-                        if(this.startGame == true && timeleft > 3 && asteroid.IsDead == false && Bullet.alive == true)
+                        if(this.startGame == true && timeleft > 1 && asteroid.IsDead == false && Bullet.alive == true)
                         {
                             let distancia = Math.sqrt((asteroid.hit.position.x - Bullet.mesh.position.x)*(asteroid.hit.position.x - Bullet.mesh.position.x) 
                             + (asteroid.hit.position.y - Bullet.mesh.position.y) * (asteroid.hit.position.y - Bullet.mesh.position.y) + 
@@ -194,11 +236,12 @@ class Game{
                             //console.log("sumaRadios:" + Radios); 
                             if(distancia < Radios)
                             {
-                                asteroid.removeEntity();
-                                asteroid.IsDead=true;
+                                this.particles(asteroid.mesh.position.clone(), 1);
+                                //asteroid.IsDead=true;
                                 Bullet.alive= false;
+                                this.score+=10;
                                 Bullet.removeEntity();
-                                this.particles(asteroid.mesh.position, 1);
+                                asteroid.removeEntity();
                             }
                         }
                     }
@@ -207,7 +250,7 @@ class Game{
                 {
                     for (let Bullet of this.players[1].ActiveBullets)
                     {
-                        if(this.startGame == true && timeleft > 3 && asteroid.IsDead == false && Bullet.alive == true)
+                        if(this.startGame == true && timeleft > 1 && asteroid.IsDead == false && Bullet.alive == true)
                         {
                             let distancia = Math.sqrt((asteroid.hit.position.x - Bullet.mesh.position.x)*(asteroid.hit.position.x - Bullet.mesh.position.x) 
                             + (asteroid.hit.position.y - Bullet.mesh.position.y) * (asteroid.hit.position.y - Bullet.mesh.position.y) + 
@@ -217,16 +260,19 @@ class Game{
                             //console.log("sumaRadios:" + Radios); 
                             if(distancia < Radios)
                             {
-                                asteroid.removeEntity();
-                                asteroid.IsDead=true;
+                                this.particles(asteroid.mesh.position.clone(), 1);                                
+                                //asteroid.IsDead=true;
                                 Bullet.alive= false;
+                                this.score+=10;
                                 Bullet.removeEntity();
-                                this.particles(asteroid.mesh.position, 1);                                
+                                asteroid.removeEntity();
                             }
                         }
                     }
                 }
             }
+            asteroid.update(dt, this.startGame);
+            asteroid.startGame = startGame;
         }
         TWEEN.update();
         // for(let enemy of this.enemys){
